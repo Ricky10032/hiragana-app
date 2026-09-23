@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kana Practice for Clara 🌸</title>
 
-    <!-- iPhoneホーム画面追加用の設定 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Kana 🌸">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23ffe6eb%22/><text y=%22.9em%22 font-size=%2280%22>🌸</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23f3e8ff%22/><text y=%22.9em%22 font-size=%2280%22>🌸</text></svg>">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
 
     <style>
@@ -21,7 +20,7 @@
         body {
             margin: 0;
             padding: 20px;
-            background: linear-gradient(180deg, #ffe6eb 0%, #fff0f3 100%);
+            background: linear-gradient(135deg, #ffe6eb 0%, #f3e8ff 50%, #e0e7ff 100%);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -30,18 +29,62 @@
             overflow-x: hidden;
         }
 
-        h1 {
-            color: #ff4d6d;
-            font-size: 1.8rem;
+        /* 🌸 五条先生ヘッダーエリア */
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
             margin-bottom: 5px;
+            position: relative;
+        }
+
+        /* 浮遊アニメーション */
+        .gojo-avatar {
+            width: 65px;
+            height: 65px;
+            animation: floatGojo 3s ease-in-out infinite;
+            filter: drop-shadow(0 5px 10px rgba(168, 85, 247, 0.3));
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .gojo-avatar:active {
+            transform: scale(1.15) rotate(5deg);
+        }
+
+        @keyframes floatGojo {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(3deg); }
+        }
+
+        /* 領域展開の輝き演出 */
+        .gojo-avatar.domain-active {
+            animation: domainExpansion 0.8s ease-in-out infinite alternate;
+        }
+
+        @keyframes domainExpansion {
+            0% { filter: drop-shadow(0 0 12px #c084fc) drop-shadow(0 0 25px #f472b6); transform: scale(1.05); }
+            100% { filter: drop-shadow(0 0 20px #e879f9) drop-shadow(0 0 35px #818cf8); transform: scale(1.15); }
+        }
+
+        h1 {
+            color: #b45309;
+            background: linear-gradient(45deg, #ec4899, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.7rem;
+            margin: 0;
             text-align: center;
+            font-weight: 800;
         }
 
         .subtitle {
-            color: #ff758f;
-            font-size: 0.95rem;
+            color: #a855f7;
+            font-size: 0.9rem;
             margin-bottom: 15px;
             text-align: center;
+            font-weight: 600;
         }
 
         .controls-container {
@@ -60,47 +103,52 @@
         }
 
         .mode-btn {
-            border: 2px solid #ff758f;
-            background: white;
+            border: 2px solid #c084fc;
+            background: rgba(255, 255, 255, 0.9);
             padding: 6px 14px;
             font-size: 0.85rem;
             font-weight: bold;
-            color: #ff758f;
+            color: #a855f7;
             border-radius: 20px;
             cursor: pointer;
             transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(168, 85, 247, 0.15);
         }
 
         .mode-btn.active {
-            background: #ff758f;
+            background: linear-gradient(135deg, #c084fc, #a855f7);
             color: white;
+            border-color: #a855f7;
         }
 
         .script-btn {
-            border: 2px solid #ff4d6d;
-            background: white;
+            border: 2px solid #f472b6;
+            background: rgba(255, 255, 255, 0.9);
             padding: 6px 16px;
             font-size: 0.9rem;
             font-weight: bold;
-            color: #ff4d6d;
+            color: #ec4899;
             border-radius: 20px;
             cursor: pointer;
             transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(236, 72, 153, 0.15);
         }
 
         .script-btn.active {
-            background: #ff4d6d;
+            background: linear-gradient(135deg, #f472b6, #ec4899);
             color: white;
+            border-color: #ec4899;
         }
 
         .tab-container {
             display: flex;
             gap: 5px;
             margin-bottom: 20px;
-            background: white;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(5px);
             padding: 5px;
             border-radius: 30px;
-            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.15);
+            box-shadow: 0 4px 18px rgba(168, 85, 247, 0.2);
         }
 
         .tab-btn {
@@ -109,24 +157,26 @@
             padding: 8px 14px;
             font-size: 0.85rem;
             font-weight: bold;
-            color: #ff758f;
+            color: #a855f7;
             border-radius: 25px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .tab-btn.active {
-            background: #ff4d6d;
+            background: linear-gradient(135deg, #ec4899, #a855f7);
             color: white;
         }
 
         .content-card {
-            background: white;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
             width: 100%;
             max-width: 380px;
             border-radius: 25px;
             padding: 25px 15px;
-            box-shadow: 0 10px 25px rgba(255, 77, 109, 0.15);
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.2);
+            border: 2px solid rgba(244, 114, 182, 0.3);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -163,14 +213,14 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            border: 3px solid #ffccd5;
-            background: #fff5f7;
+            border: 3px solid #f472b6;
+            background: linear-gradient(180deg, #ffffff 0%, #fef2f2 100%);
             padding: 10px;
         }
 
         .card-front .char {
             font-size: 3.2rem;
-            color: #ff4d6d;
+            color: #ec4899;
             font-weight: bold;
             text-align: center;
             word-break: break-all;
@@ -178,9 +228,9 @@
 
         .card-back {
             transform: rotateY(180deg);
-            background: #ff4d6d;
+            background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%);
             color: white;
-            border-color: #ff4d6d;
+            border-color: #a855f7;
         }
 
         .card-back .romaji {
@@ -205,7 +255,7 @@
         }
 
         .nav-btn {
-            background: #ff758f;
+            background: linear-gradient(135deg, #f472b6, #a855f7);
             color: white;
             border: none;
             width: 45px;
@@ -216,7 +266,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
             transition: transform 0.1s ease;
         }
 
@@ -226,7 +276,7 @@
 
         .quiz-char {
             font-size: 3.2rem;
-            color: #ff4d6d;
+            color: #ec4899;
             font-weight: bold;
             margin-bottom: 20px;
             text-align: center;
@@ -241,9 +291,9 @@
         }
 
         .option-btn {
-            background: #fff5f7;
-            border: 2px solid #ffccd5;
-            color: #ff4d6d;
+            background: #faf5ff;
+            border: 2px solid #e9d5ff;
+            color: #a855f7;
             padding: 14px 6px;
             font-size: 0.95rem;
             font-weight: bold;
@@ -261,7 +311,7 @@
         .score-board {
             margin-top: 15px;
             font-size: 0.95rem;
-            color: #ff758f;
+            color: #a855f7;
             font-weight: bold;
         }
 
@@ -276,8 +326,8 @@
         }
 
         .chart-item {
-            background: #fff5f7;
-            border: 1.5px solid #ffccd5;
+            background: #faf5ff;
+            border: 1.5px solid #e9d5ff;
             border-radius: 12px;
             padding: 8px 4px;
             display: flex;
@@ -288,20 +338,20 @@
         }
 
         .chart-item:active {
-            background: #ffe6eb;
+            background: #f3e8ff;
         }
 
         .chart-main {
             font-size: 1.2rem;
             font-weight: bold;
-            color: #ff4d6d;
+            color: #ec4899;
             text-align: center;
             word-break: break-all;
         }
 
         .chart-sub {
             font-size: 0.7rem;
-            color: #ff758f;
+            color: #a855f7;
             margin-top: 2px;
             text-align: center;
             word-break: break-all;
@@ -331,12 +381,12 @@
         }
 
         .feedback-correct {
-            background: rgba(255, 230, 235, 0.92);
-            color: #ff2a55;
+            background: rgba(243, 232, 255, 0.95);
+            color: #a855f7;
         }
 
         .feedback-wrong {
-            background: rgba(240, 240, 240, 0.92);
+            background: rgba(240, 240, 240, 0.95);
             color: #888;
         }
 
@@ -361,8 +411,32 @@
 </head>
 <body>
 
-    <h1>Japanese Kana for Clara 🌸</h1>
-    <div class="subtitle">Learn & Test with Ryuji 🖤</div>
+    <!-- 🌸 五条先生ヘッダー（SVGちびアニメ付き） -->
+    <div class="header-container">
+        <svg class="gojo-avatar" id="gojoAvatar" viewBox="0 0 100 100">
+            <!-- 頭部・髪の毛（白髪） -->
+            <path d="M 20 45 Q 15 15 50 10 Q 85 15 80 45 Z" fill="#ffffff" stroke="#e9d5ff" stroke-width="2"/>
+            <!-- ツンツン髪の束 -->
+            <path d="M 25 30 L 15 10 L 35 22 L 50 5 L 65 22 L 85 10 L 75 30" fill="#ffffff" stroke="#e9d5ff" stroke-width="2"/>
+            <!-- 顔 -->
+            <ellipse cx="50" cy="52" rx="28" ry="24" fill="#fff1f2"/>
+            <!-- アイマスク・サングラス（紫黒） -->
+            <rect x="24" y="42" width="52" height="18" rx="9" fill="#3b0764"/>
+            <rect x="28" y="45" width="44" height="12" rx="6" fill="#581c87"/>
+            <!-- 光の反射（ゆめかわツヤ） -->
+            <circle cx="36" cy="48" r="3" fill="#f472b6"/>
+            <circle cx="64" cy="48" r="3" fill="#c084fc"/>
+            <!-- にっこり口 -->
+            <path d="M 44 65 Q 50 70 56 65" fill="none" stroke="#ec4899" stroke-width="3" stroke-linecap="round"/>
+            <!-- ほっぺ（ピンク） -->
+            <circle cx="32" cy="60" r="4" fill="#fbcfe8"/>
+            <circle cx="68" cy="60" r="4" fill="#fbcfe8"/>
+        </svg>
+        <div>
+            <h1>Kana for Clara 🌸</h1>
+            <div class="subtitle">Sensei Gojo & Ryuji's Class 🖤</div>
+        </div>
+    </div>
 
     <div class="controls-container">
         <div class="toggle-group">
@@ -387,7 +461,7 @@
             <div class="flashcard" id="flashcard">
                 <div class="card-face card-front">
                     <div class="char" id="cardChar">あ</div>
-                    <span style="font-size: 0.8rem; color: #ff758f; margin-top: 10px;">Tap to flip 🔄</span>
+                    <span style="font-size: 0.8rem; color: #a855f7; margin-top: 10px;">Tap to flip 🔄</span>
                 </div>
                 <div class="card-face card-back">
                     <div class="romaji" id="cardRomaji">a</div>
@@ -397,7 +471,7 @@
         </div>
         <div class="card-nav">
             <button class="nav-btn" id="prevCardBtn">❮</button>
-            <span id="cardCounter" style="color: #ff758f; font-weight: bold;">1 / 46</span>
+            <span id="cardCounter" style="color: #a855f7; font-weight: bold;">1 / 46</span>
             <button class="nav-btn" id="nextCardBtn">❯</button>
         </div>
     </div>
@@ -415,7 +489,7 @@
 
     <div id="chartSection" class="content-card hidden">
         <div class="chart-grid" id="chartGrid"></div>
-        <div style="font-size: 0.8rem; color: #ff758f; margin-top: 10px;">Tap any character/word to listen! 🔊</div>
+        <div style="font-size: 0.8rem; color: #a855f7; margin-top: 10px;">Tap any character/word to listen! 🔊</div>
     </div>
 
     <script>
@@ -563,12 +637,12 @@
 
         const kHard = [
             { kana: 'ガ', romaji: 'ga' }, { kana: 'ギ', romaji: 'gi' }, { kana: 'グ', romaji: 'gu' }, { kana: 'ゲ', romaji: 'ge' }, { kana: 'ゴ', romaji: 'go' },
-            { kana: 'ザ', romaji: 'za' }, { kana: 'ジ', romaji: 'ji' }, { kana: 'ズ', romaji: 'zu' }, { kana: 'ぜ', romaji: 'ze' }, { kana: 'ゾ', romaji: 'zo' },
+            { kana: 'ザ', romaji: 'za' }, { kana: 'ジ', romaji: 'ji' }, { kana: 'ズ', romaji: 'zu' }, { kana: 'ゼ', romaji: 'ze' }, { kana: 'ゾ', romaji: 'zo' },
             { kana: 'ダ', romaji: 'da' }, { kana: 'ヂ', romaji: 'ji' }, { kana: 'ヅ', romaji: 'zu' }, { kana: 'デ', romaji: 'de' }, { kana: 'ド', romaji: 'do' },
             { kana: 'バ', romaji: 'ba' }, { kana: 'ビ', romaji: 'bi' }, { kana: 'ブ', romaji: 'bu' }, { kana: 'ベ', romaji: 'be' }, { kana: 'ボ', romaji: 'bo' },
             { kana: 'パ', romaji: 'pa' }, { kana: 'ピ', romaji: 'pi' }, { kana: 'プ', romaji: 'pu' }, { kana: 'ペ', romaji: 'pe' }, { kana: 'ポ', romaji: 'po' },
             { kana: 'キャ', romaji: 'kya' }, { kana: 'キュ', romaji: 'kyu' }, { kana: 'キョ', romaji: 'kyo' },
-            { kana: 'シャ', romaji: 'sha' }, { kana: 'シュ', romaji: 'shu' }, { kana: 'ショ', romaji: 'sho' },
+            { kana: 'シャ', romaji: 'sha' }, { kana: 'シュ', romaji: 'shu' stroke-linecap='round', { kana: 'ショ', romaji: 'sho' },
             { kana: 'チャ', romaji: 'cha' }, { kana: 'チュ', romaji: 'chu' }, { kana: 'チョ', romaji: 'cho' },
             { kana: 'ニャ', romaji: 'nya' }, { kana: 'ニュ', romaji: 'nyu' }, { kana: 'ニョ', romaji: 'nyo' },
             { kana: 'ヒャ', romaji: 'hya' }, { kana: 'ヒュ', romaji: 'hyu' }, { kana: 'ヒョ', romaji: 'hyo' },
@@ -680,19 +754,19 @@
         ];
 
         const perfectMessages = [
-            "10/10 PERFECT!! You are officially a Kana Master, Clara! 🌸✨ So proud of you! 🖤 - Ryuji",
-            "100%!! Absolutely flawless! My girl is unstoppable! 🥰🎉 - Ryuji",
-            "FULL MARKS!! You nailed even the hardest ones! Amazing job Clara! 💖 - Ryuji"
+            "10/10 Domain Expansion!! 🌸✨ You are a Kana Master, Clara! So proud of you! 🖤 - Sensei Gojo & Ryuji",
+            "100% PERFECT!! Unstoppable force, Clara! 🥰🎉 - Sensei Gojo & Ryuji",
+            "FULL MARKS!! Infinite knowledge unlocked! Amazing job Clara! 💖 - Sensei Gojo & Ryuji"
         ];
 
         const highMessages = [
-            "So close to perfection! Great job Clara! You're mastering this so fast! 💖 - Ryuji",
-            "Awesome score!! You're doing incredible, Clara! Keep going! 🖤 - Ryuji"
+            "So close to perfection! Great job Clara! 💖 - Sensei Gojo",
+            "Awesome score!! You're mastering this so fast! 🖤 - Ryuji"
         ];
 
         const goodMessages = [
-            "Good effort Clara! Practice makes perfect, and you're doing great! 💪✨ - Ryuji",
-            "Nice try!! Keep practicing and you'll get 10/10 next time! 🖤 - Ryuji"
+            "Good effort Clara! Practice makes perfect! 💪✨ - Sensei Gojo",
+            "Nice try!! Keep practicing, you got this! 🖤 - Ryuji"
         ];
 
         function shuffle(array) {
@@ -728,6 +802,14 @@
         const easyModeBtn = document.getElementById('easyModeBtn');
         const hardModeBtn = document.getElementById('hardModeBtn');
         const wordsModeBtn = document.getElementById('wordsModeBtn');
+        const gojoAvatar = document.getElementById('gojoAvatar');
+
+        // 五条先生タップ時のセリフ・ボイスアクション
+        gojoAvatar.addEventListener('click', () => {
+            speakKana("大丈夫、僕最強だから");
+            gojoAvatar.classList.add('domain-active');
+            setTimeout(() => gojoAvatar.classList.remove('domain-active'), 2000);
+        });
 
         hiraganaBtn.addEventListener('click', () => {
             isKatakana = false;
@@ -813,16 +895,14 @@
             renderChart();
         });
 
-        // 🌸 AI・端末最良ボイス指定＋高ピッチチューニングで可愛く再生！
         function speakKana(text) {
             if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); // 再生中の音声を一度キャンセル
+                window.speechSynthesis.cancel();
 
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'ja-JP';
 
                 const voices = window.speechSynthesis.getVoices();
-                // 女性・高品質ボイスを優先選択
                 const cuteVoice = voices.find(v => 
                     v.lang.includes('ja') && (
                         v.name.includes('Kyoko') || 
@@ -837,8 +917,8 @@
                     utterance.voice = cuteVoice;
                 }
 
-                utterance.pitch = 1.25; // 声の高さを少し上げてアニメ声風に！
-                utterance.rate = 0.85;  // ほんのりゆっくりでクリアに！
+                utterance.pitch = 1.25;
+                utterance.rate = 0.85;
 
                 window.speechSynthesis.speak(utterance);
             }
@@ -910,8 +990,13 @@
         function loadQuizQuestion() {
             if (currentQuizIndex >= quizData.length) {
                 let msgList = goodMessages;
-                if (score === quizData.length) msgList = perfectMessages;
-                else if (score >= Math.floor(quizData.length * 0.7)) msgList = highMessages;
+                if (score === quizData.length) {
+                    msgList = perfectMessages;
+                    gojoAvatar.classList.add('domain-active');
+                    setTimeout(() => gojoAvatar.classList.remove('domain-active'), 3000);
+                } else if (score >= Math.floor(quizData.length * 0.7)) {
+                    msgList = highMessages;
+                }
                 
                 const finalMsg = msgList[Math.floor(Math.random() * msgList.length)];
 
