@@ -245,13 +245,13 @@
             border: 2px solid #ffccd5;
             color: #ff4d6d;
             padding: 14px 6px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: bold;
             border-radius: 15px;
             cursor: pointer;
             transition: all 0.2s ease;
             text-align: center;
-            word-break: break-all;
+            word-break: break-word;
         }
 
         .option-btn:active {
@@ -347,7 +347,7 @@
         }
 
         .feedback-text {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: bold;
             margin-top: 10px;
             text-align: center;
@@ -447,7 +447,6 @@
             { kana: 'りゃ', romaji: 'rya' }, { kana: 'りゅ', romaji: 'ryu' }, { kana: 'りょ', romaji: 'ryo' }
         ];
 
-        // ひらがな単語100個
         const hWords = [
             { kana: 'さくら', romaji: 'sakura', meaning: 'Cherry Blossom 🌸' },
             { kana: 'ねこ', romaji: 'neko', meaning: 'Cat 🐱' },
@@ -525,7 +524,6 @@
             { kana: 'ちいさい', romaji: 'chiisai', meaning: 'Small 🐭' },
             { kana: 'たかい', romaji: 'takai', meaning: 'High / Expensive 🏷️' },
             { kana: 'やすい', romaji: 'yasui', meaning: 'Cheap 🪙' },
-            { kana: 'あかい', romaji: 'akai', meaning: 'Red 🍎' },
             { kana: 'たのしい', romaji: 'tanoshii', meaning: 'Fun ✨' },
             { kana: 'うれしい', romaji: 'ureshii', meaning: 'Happy 😊' },
             { kana: 'かなしい', romaji: 'kanashii', meaning: 'Sad 😢' },
@@ -578,7 +576,6 @@
             { kana: 'リャ', romaji: 'rya' }, { kana: 'リュ', romaji: 'ryu' }, { kana: 'リョ', romaji: 'ryo' }
         ];
 
-        // カタカナ単語100個
         const kWords = [
             { kana: 'アイス', romaji: 'aisu', meaning: 'Ice cream 🍦' },
             { kana: 'コーヒー', romaji: 'ko-hi-', meaning: 'Coffee ☕️' },
@@ -902,11 +899,15 @@
             quizChar.innerText = currentItem.kana;
             scoreBoard.innerText = `Score: ${score} / ${quizData.length}`;
 
-            let options = [currentItem.romaji];
+            // 単語モードなら英語の意味（meaning）、文字モードならローマ字（romaji）を正解値に設定！
+            const correctVal = (mode === 'words' && currentItem.meaning) ? currentItem.meaning : currentItem.romaji;
+
+            let options = [correctVal];
             while (options.length < 4 && options.length < currentSet.length) {
                 const randomItem = currentSet[Math.floor(Math.random() * currentSet.length)];
-                if (!options.includes(randomItem.romaji)) {
-                    options.push(randomItem.romaji);
+                const val = (mode === 'words' && randomItem.meaning) ? randomItem.meaning : randomItem.romaji;
+                if (!options.includes(val)) {
+                    options.push(val);
                 }
             }
             options = shuffle(options);
@@ -916,7 +917,7 @@
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerText = opt;
-                btn.addEventListener('click', () => checkAnswer(opt, currentItem.romaji));
+                btn.addEventListener('click', () => checkAnswer(opt, correctVal));
                 optionsGrid.appendChild(btn);
             });
         }
