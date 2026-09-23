@@ -35,7 +35,6 @@
             text-align: center;
         }
 
-        /* タブ切替ボタン */
         .tab-container {
             display: flex;
             gap: 10px;
@@ -63,7 +62,6 @@
             color: white;
         }
 
-        /* カード・クイズ共通コンテナ */
         .content-card {
             background: white;
             width: 100%;
@@ -76,7 +74,6 @@
             align-items: center;
         }
 
-        /* フラッシュカード（3Dフリップ） */
         .flashcard-wrapper {
             perspective: 1000px;
             width: 220px;
@@ -152,7 +149,6 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        /* クイズ部分 */
         .quiz-char {
             font-size: 4.5rem;
             color: #ff4d6d;
@@ -200,13 +196,11 @@
     <h1>Hiragana for Clara 🌸</h1>
     <div class="subtitle">Learn & Test with Ryuji 🖤</div>
 
-    <!-- タブ切り替え -->
     <div class="tab-container">
         <button class="tab-btn active" id="cardTabBtn">1. Flashcards 🎴</button>
         <button class="tab-btn" id="quizTabBtn">2. Quiz Mode ✏️</button>
     </div>
 
-    <!-- フラッシュカード画面 -->
     <div id="cardSection" class="content-card">
         <div class="flashcard-wrapper" id="cardWrapper">
             <div class="flashcard" id="flashcard">
@@ -221,40 +215,48 @@
         </div>
         <div class="card-nav">
             <button class="nav-btn" id="prevCardBtn">❮</button>
-            <span id="cardCounter" style="color: #ff758f; font-weight: bold;">1 / 10</span>
+            <span id="cardCounter" style="color: #ff758f; font-weight: bold;">1 / 46</span>
             <button class="nav-btn" id="nextCardBtn">❯</button>
         </div>
     </div>
 
-    <!-- クイズ画面 -->
     <div id="quizSection" class="content-card hidden">
         <div class="quiz-char" id="quizChar">あ</div>
-        <div class="options-grid" id="optionsGrid">
-            <!-- ボタンが自動生成される -->
-        </div>
+        <div class="options-grid" id="optionsGrid"></div>
         <div class="score-board" id="scoreBoard">Score: 0 / 10</div>
     </div>
 
     <script>
-        // 基本のひらがなデータセット（あ行〜か行）
-        const kanaData = [
-            { kana: 'あ', romaji: 'a' },
-            { kana: 'い', romaji: 'i' },
-            { kana: 'う', romaji: 'u' },
-            { kana: 'え', romaji: 'e' },
-            { kana: 'お', romaji: 'o' },
-            { kana: 'か', romaji: 'ka' },
-            { kana: 'き', romaji: 'ki' },
-            { kana: 'く', romaji: 'ku' },
-            { kana: 'け', romaji: 'ke' },
-            { kana: 'こ', romaji: 'ko' }
+        // ひらがな基本50音（46文字）完全データセット
+        const allKanaData = [
+            { kana: 'あ', romaji: 'a' }, { kana: 'い', romaji: 'i' }, { kana: 'う', romaji: 'u' }, { kana: 'え', romaji: 'e' }, { kana: 'お', romaji: 'o' },
+            { kana: 'か', romaji: 'ka' }, { kana: 'き', romaji: 'ki' }, { kana: 'く', romaji: 'ku' }, { kana: 'け', romaji: 'ke' }, { kana: 'こ', romaji: 'ko' },
+            { kana: 'さ', romaji: 'sa' }, { kana: 'し', romaji: 'shi' }, { kana: 'す', romaji: 'su' }, { kana: 'せ', romaji: 'se' }, { kana: 'そ', romaji: 'so' },
+            { kana: 'た', romaji: 'ta' }, { kana: 'ち', romaji: 'chi' }, { kana: 'つ', romaji: 'tsu' }, { kana: 'て', romaji: 'te' }, { kana: 'と', romaji: 'to' },
+            { kana: 'な', romaji: 'na' }, { kana: 'に', romaji: 'ni' }, { kana: 'ぬ', romaji: 'nu' }, { kana: 'ね', romaji: 'ne' }, { kana: 'の', romaji: 'no' },
+            { kana: 'は', romaji: 'ha' }, { kana: 'ひ', romaji: 'hi' }, { kana: 'ふ', romaji: 'fu' }, { kana: 'へ', romaji: 'he' }, { kana: 'ほ', romaji: 'ho' },
+            { kana: 'ま', romaji: 'ma' }, { kana: 'み', romaji: 'mi' }, { kana: 'む', romaji: 'mu' }, { kana: 'め', romaji: 'me' }, { kana: 'も', romaji: 'mo' },
+            { kana: 'や', romaji: 'ya' }, { kana: 'ゆ', romaji: 'yu' }, { kana: 'よ', romaji: 'yo' },
+            { kana: 'ら', romaji: 'ra' }, { kana: 'り', romaji: 'ri' }, { kana: 'る', romaji: 'ru' }, { kana: 'れ', romaji: 're' }, { kana: 'ろ', romaji: 'ro' },
+            { kana: 'わ', romaji: 'wa' }, { kana: 'を', romaji: 'wo' }, { kana: 'ん', romaji: 'n' }
         ];
 
+        // 配列をシャッフルする関数
+        function shuffle(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        let flashcardData = shuffle(allKanaData); // フラッシュカード用シャッフル
+        let quizData = [];                        // クイズ用シャッフル
         let currentCardIndex = 0;
         let currentQuizIndex = 0;
         let score = 0;
 
-        // --- タブ切り替え ---
         const cardTabBtn = document.getElementById('cardTabBtn');
         const quizTabBtn = document.getElementById('quizTabBtn');
         const cardSection = document.getElementById('cardSection');
@@ -275,17 +277,15 @@
             startQuiz();
         });
 
-        // --- 音声読み上げ（Text-to-Speech） ---
         function speakKana(text) {
             if ('speechSynthesis' in window) {
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'ja-JP';
-                utterance.rate = 0.8; // 聞き取りやすく少しゆっくり
+                utterance.rate = 0.8;
                 window.speechSynthesis.speak(utterance);
             }
         }
 
-        // --- フラッシュカード処理 ---
         const flashcard = document.getElementById('flashcard');
         const cardWrapper = document.getElementById('cardWrapper');
         const cardChar = document.getElementById('cardChar');
@@ -295,16 +295,16 @@
         function updateCard() {
             flashcard.classList.remove('flipped');
             setTimeout(() => {
-                const item = kanaData[currentCardIndex];
+                const item = flashcardData[currentCardIndex];
                 cardChar.innerText = item.kana;
                 cardRomaji.innerText = item.romaji;
-                cardCounter.innerText = `${currentCardIndex + 1} / ${kanaData.length}`;
+                cardCounter.innerText = `${currentCardIndex + 1} / ${flashcardData.length}`;
             }, 150);
         }
 
         cardWrapper.addEventListener('click', () => {
             flashcard.classList.toggle('flipped');
-            speakKana(kanaData[currentCardIndex].kana);
+            speakKana(flashcardData[currentCardIndex].kana);
         });
 
         document.getElementById('prevCardBtn').addEventListener('click', () => {
@@ -315,45 +315,47 @@
         });
 
         document.getElementById('nextCardBtn').addEventListener('click', () => {
-            if (currentCardIndex < kanaData.length - 1) {
+            if (currentCardIndex < flashcardData.length - 1) {
                 currentCardIndex++;
+                updateCard();
+            } else {
+                // 最後まで行ったら再度シャッフルして最初へ
+                flashcardData = shuffle(allKanaData);
+                currentCardIndex = 0;
                 updateCard();
             }
         });
 
-        // --- クイズ処理 ---
         const quizChar = document.getElementById('quizChar');
         const optionsGrid = document.getElementById('optionsGrid');
         const scoreBoard = document.getElementById('scoreBoard');
 
         function startQuiz() {
+            quizData = shuffle(allKanaData).slice(0, 10); // 毎回ランダムで10問抽出
             currentQuizIndex = 0;
             score = 0;
             loadQuizQuestion();
         }
 
         function loadQuizQuestion() {
-            if (currentQuizIndex >= kanaData.length) {
-                // クイズ終了
-                alert(`Quiz Finished! 🎉\nYour Score: ${score} / ${kanaData.length}\n\n"Amazing job, Clara! Super proud of you! 🖤" - Ryuji`);
-                startQuiz();
+            if (currentQuizIndex >= quizData.length) {
+                alert(`Quiz Finished! 🎉\nYour Score: ${score} / ${quizData.length}\n\n"Amazing job, Clara! Super proud of you! 🖤" - Ryuji`);
+                startQuiz(); // 再びランダムで10問セットしてリセット
                 return;
             }
 
-            const currentItem = kanaData[currentQuizIndex];
+            const currentItem = quizData[currentQuizIndex];
             quizChar.innerText = currentItem.kana;
-            scoreBoard.innerText = `Score: ${score} / ${kanaData.length}`;
+            scoreBoard.innerText = `Score: ${score} / ${quizData.length}`;
 
-            // 選択肢の生成（正解1つ + ランダムダミー3つ）
             let options = [currentItem.romaji];
             while (options.length < 4) {
-                const randomItem = kanaData[Math.floor(Math.random() * kanaData.length)];
+                const randomItem = allKanaData[Math.floor(Math.random() * allKanaData.length)];
                 if (!options.includes(randomItem.romaji)) {
                     options.push(randomItem.romaji);
                 }
             }
-            // シャッフル
-            options.sort(() => Math.random() - 0.5);
+            options = shuffle(options);
 
             optionsGrid.innerHTML = '';
             options.forEach(opt => {
@@ -366,7 +368,7 @@
         }
 
         function checkAnswer(selected, correct) {
-            speakKana(kanaData[currentQuizIndex].kana);
+            speakKana(quizData[currentQuizIndex].kana);
             if (selected === correct) {
                 score++;
             }
@@ -374,7 +376,6 @@
             loadQuizQuestion();
         }
 
-        // 初期化
         updateCard();
     </script>
 </body>
