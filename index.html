@@ -36,7 +36,7 @@
             text-align: center;
         }
 
-        /* モード選択（Easy / Hard） */
+        /* モード選択（Easy Mode / Hard Mode） */
         .mode-container {
             display: flex;
             gap: 10px;
@@ -46,8 +46,8 @@
         .mode-btn {
             border: 2px solid #ff758f;
             background: white;
-            padding: 6px 16px;
-            font-size: 0.85rem;
+            padding: 8px 20px;
+            font-size: 0.9rem;
             font-weight: bold;
             color: #ff758f;
             border-radius: 20px;
@@ -276,10 +276,10 @@
     <h1>Hiragana for Clara 🌸</h1>
     <div class="subtitle">Learn & Test with Ryuji 🖤</div>
 
-    <!-- 難易度切り替えボタン -->
+    <!-- シンプルな難易度切り替えボタン -->
     <div class="mode-container">
-        <button class="mode-btn active" id="easyModeBtn">Easy Mode (Basic)</button>
-        <button class="mode-btn" id="hardModeBtn">Hard Mode (ガ/パ/きゃ)</button>
+        <button class="mode-btn active" id="easyModeBtn">Easy Mode</button>
+        <button class="mode-btn" id="hardModeBtn">Hard Mode</button>
     </div>
 
     <!-- タブ切り替え -->
@@ -321,7 +321,7 @@
     </div>
 
     <script>
-        // 基本46文字
+        // 基本46文字 (Easy Mode)
         const basicKanaData = [
             { kana: 'あ', romaji: 'a' }, { kana: 'い', romaji: 'i' }, { kana: 'う', romaji: 'u' }, { kana: 'え', romaji: 'e' }, { kana: 'お', romaji: 'o' },
             { kana: 'か', romaji: 'ka' }, { kana: 'き', romaji: 'ki' }, { kana: 'く', romaji: 'ku' }, { kana: 'け', romaji: 'ke' }, { kana: 'こ', romaji: 'ko' },
@@ -335,7 +335,7 @@
             { kana: 'わ', romaji: 'wa' }, { kana: 'を', romaji: 'wo' }, { kana: 'ん', romaji: 'n' }
         ];
 
-        // 濁音・半濁音・拗音データ（Hard Mode用に追加）
+        // 濁音・半濁音・拗音データ (Hard Mode用に追加)
         const hardKanaData = [
             // 濁音
             { kana: 'が', romaji: 'ga' }, { kana: 'ぎ', romaji: 'gi' }, { kana: 'ぐ', romaji: 'gu' }, { kana: 'げ', romaji: 'ge' }, { kana: 'ご', romaji: 'go' },
@@ -384,7 +384,7 @@
             return arr;
         }
 
-        let currentDataSet = basicKanaData; // デフォルトはEasy Mode
+        let currentDataSet = basicKanaData;
         let flashcardData = shuffle(currentDataSet);
         let quizData = [];
         let currentCardIndex = 0;
@@ -406,7 +406,7 @@
         hardModeBtn.addEventListener('click', () => {
             hardModeBtn.classList.add('active');
             easyModeBtn.classList.remove('active');
-            currentDataSet = [...basicKanaData, ...hardKanaData]; // Easy + Hard全合体
+            currentDataSet = [...basicKanaData, ...hardKanaData];
             resetAll();
         });
 
