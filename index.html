@@ -29,7 +29,6 @@
             overflow-x: hidden;
         }
 
-        /* 🌸 五条先生ヘッダーエリア */
         .header-container {
             display: flex;
             align-items: center;
@@ -39,7 +38,6 @@
             position: relative;
         }
 
-        /* 浮遊アニメーション */
         .gojo-avatar {
             width: 65px;
             height: 65px;
@@ -58,7 +56,6 @@
             50% { transform: translateY(-8px) rotate(3deg); }
         }
 
-        /* 領域展開の輝き演出 */
         .gojo-avatar.domain-active {
             animation: domainExpansion 0.8s ease-in-out infinite alternate;
         }
@@ -411,24 +408,16 @@
 </head>
 <body>
 
-    <!-- 🌸 五条先生ヘッダー（SVGちびアニメ付き） -->
     <div class="header-container">
         <svg class="gojo-avatar" id="gojoAvatar" viewBox="0 0 100 100">
-            <!-- 頭部・髪の毛（白髪） -->
             <path d="M 20 45 Q 15 15 50 10 Q 85 15 80 45 Z" fill="#ffffff" stroke="#e9d5ff" stroke-width="2"/>
-            <!-- ツンツン髪の束 -->
             <path d="M 25 30 L 15 10 L 35 22 L 50 5 L 65 22 L 85 10 L 75 30" fill="#ffffff" stroke="#e9d5ff" stroke-width="2"/>
-            <!-- 顔 -->
             <ellipse cx="50" cy="52" rx="28" ry="24" fill="#fff1f2"/>
-            <!-- アイマスク・サングラス（紫黒） -->
             <rect x="24" y="42" width="52" height="18" rx="9" fill="#3b0764"/>
             <rect x="28" y="45" width="44" height="12" rx="6" fill="#581c87"/>
-            <!-- 光の反射（ゆめかわツヤ） -->
             <circle cx="36" cy="48" r="3" fill="#f472b6"/>
             <circle cx="64" cy="48" r="3" fill="#c084fc"/>
-            <!-- にっこり口 -->
             <path d="M 44 65 Q 50 70 56 65" fill="none" stroke="#ec4899" stroke-width="3" stroke-linecap="round"/>
-            <!-- ほっぺ（ピンク） -->
             <circle cx="32" cy="60" r="4" fill="#fbcfe8"/>
             <circle cx="68" cy="60" r="4" fill="#fbcfe8"/>
         </svg>
@@ -517,7 +506,7 @@
             { kana: 'ちゃ', romaji: 'cha' }, { kana: 'ちゅ', romaji: 'chu' }, { kana: 'ちょ', romaji: 'cho' },
             { kana: 'にゃ', romaji: 'nya' }, { kana: 'にゅ', romaji: 'nyu' }, { kana: 'にょ', romaji: 'nyo' },
             { kana: 'ひゃ', romaji: 'hya' }, { kana: 'ひゅ', romaji: 'hyu' }, { kana: 'ひょ', romaji: 'hyo' },
-            { kana: 'みゃ', romaji: 'mya' }, { kana: 'みゅ', romaji: 'myu' }, { kana: 'みょ', romaji: 'myo' },
+            { kana: 'みゃ', romaji: 'mya' }, { kana: 'ミュ', romaji: 'myu' }, { kana: 'みょ', romaji: 'myo' },
             { kana: 'りゃ', romaji: 'rya' }, { kana: 'りゅ', romaji: 'ryu' }, { kana: 'りょ', romaji: 'ryo' }
         ];
 
@@ -642,7 +631,7 @@
             { kana: 'バ', romaji: 'ba' }, { kana: 'ビ', romaji: 'bi' }, { kana: 'ブ', romaji: 'bu' }, { kana: 'ベ', romaji: 'be' }, { kana: 'ボ', romaji: 'bo' },
             { kana: 'パ', romaji: 'pa' }, { kana: 'ピ', romaji: 'pi' }, { kana: 'プ', romaji: 'pu' }, { kana: 'ペ', romaji: 'pe' }, { kana: 'ポ', romaji: 'po' },
             { kana: 'キャ', romaji: 'kya' }, { kana: 'キュ', romaji: 'kyu' }, { kana: 'キョ', romaji: 'kyo' },
-            { kana: 'シャ', romaji: 'sha' }, { kana: 'シュ', romaji: 'shu' stroke-linecap='round', { kana: 'ショ', romaji: 'sho' },
+            { kana: 'しゃ', romaji: 'sha' }, { kana: 'しゅ', romaji: 'shu' }, { kana: 'しょ', romaji: 'sho' },
             { kana: 'チャ', romaji: 'cha' }, { kana: 'チュ', romaji: 'chu' }, { kana: 'チョ', romaji: 'cho' },
             { kana: 'ニャ', romaji: 'nya' }, { kana: 'ニュ', romaji: 'nyu' }, { kana: 'ニョ', romaji: 'nyo' },
             { kana: 'ヒャ', romaji: 'hya' }, { kana: 'ヒュ', romaji: 'hyu' }, { kana: 'ヒョ', romaji: 'hyo' },
@@ -804,7 +793,6 @@
         const wordsModeBtn = document.getElementById('wordsModeBtn');
         const gojoAvatar = document.getElementById('gojoAvatar');
 
-        // 五条先生タップ時のセリフ・ボイスアクション
         gojoAvatar.addEventListener('click', () => {
             speakKana("大丈夫、僕最強だから");
             gojoAvatar.classList.add('domain-active');
