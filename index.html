@@ -32,14 +32,39 @@
         .subtitle {
             color: #ff758f;
             font-size: 0.95rem;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             text-align: center;
         }
 
+        /* モード選択（Easy / Hard） */
+        .mode-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .mode-btn {
+            border: 2px solid #ff758f;
+            background: white;
+            padding: 6px 16px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #ff758f;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .mode-btn.active {
+            background: #ff758f;
+            color: white;
+        }
+
+        /* タブ切替 */
         .tab-container {
             display: flex;
             gap: 10px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             background: white;
             padding: 5px;
             border-radius: 30px;
@@ -112,7 +137,7 @@
         }
 
         .card-front .char {
-            font-size: 5rem;
+            font-size: 4.5rem;
             color: #ff4d6d;
             font-weight: bold;
         }
@@ -125,7 +150,7 @@
         }
 
         .card-back .romaji {
-            font-size: 3.5rem;
+            font-size: 3rem;
             font-weight: bold;
         }
 
@@ -163,7 +188,6 @@
             color: #ff4d6d;
             font-weight: bold;
             margin-bottom: 20px;
-            transition: transform 0.2s ease;
         }
 
         .options-grid {
@@ -178,7 +202,7 @@
             border: 2px solid #ffccd5;
             color: #ff4d6d;
             padding: 15px;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: bold;
             border-radius: 15px;
             cursor: pointer;
@@ -196,7 +220,7 @@
             font-weight: bold;
         }
 
-        /* ⭕️❌ オーバーレイアニメーション */
+        /* ⭕️❌ オーバーレイ */
         .feedback-overlay {
             position: absolute;
             top: 0;
@@ -252,6 +276,13 @@
     <h1>Hiragana for Clara 🌸</h1>
     <div class="subtitle">Learn & Test with Ryuji 🖤</div>
 
+    <!-- 難易度切り替えボタン -->
+    <div class="mode-container">
+        <button class="mode-btn active" id="easyModeBtn">Easy Mode (Basic)</button>
+        <button class="mode-btn" id="hardModeBtn">Hard Mode (ガ/パ/きゃ)</button>
+    </div>
+
+    <!-- タブ切り替え -->
     <div class="tab-container">
         <button class="tab-btn active" id="cardTabBtn">1. Flashcards 🎴</button>
         <button class="tab-btn" id="quizTabBtn">2. Quiz Mode ✏️</button>
@@ -283,7 +314,6 @@
         <div class="options-grid" id="optionsGrid"></div>
         <div class="score-board" id="scoreBoard">Score: 0 / 10</div>
 
-        <!-- 正解・不正解ポップアップ -->
         <div id="feedbackOverlay" class="feedback-overlay">
             <div class="feedback-symbol" id="feedbackSymbol">⭕️</div>
             <div class="feedback-text" id="feedbackText">Great!</div>
@@ -291,7 +321,8 @@
     </div>
 
     <script>
-        const allKanaData = [
+        // 基本46文字
+        const basicKanaData = [
             { kana: 'あ', romaji: 'a' }, { kana: 'い', romaji: 'i' }, { kana: 'う', romaji: 'u' }, { kana: 'え', romaji: 'e' }, { kana: 'お', romaji: 'o' },
             { kana: 'か', romaji: 'ka' }, { kana: 'き', romaji: 'ki' }, { kana: 'く', romaji: 'ku' }, { kana: 'け', romaji: 'ke' }, { kana: 'こ', romaji: 'ko' },
             { kana: 'さ', romaji: 'sa' }, { kana: 'し', romaji: 'shi' }, { kana: 'す', romaji: 'su' }, { kana: 'せ', romaji: 'se' }, { kana: 'そ', romaji: 'so' },
@@ -304,24 +335,44 @@
             { kana: 'わ', romaji: 'wa' }, { kana: 'を', romaji: 'wo' }, { kana: 'ん', romaji: 'n' }
         ];
 
-        // 10問終了後の褒めメッセージ（スコア別で大量用意！）
+        // 濁音・半濁音・拗音データ（Hard Mode用に追加）
+        const hardKanaData = [
+            // 濁音
+            { kana: 'が', romaji: 'ga' }, { kana: 'ぎ', romaji: 'gi' }, { kana: 'ぐ', romaji: 'gu' }, { kana: 'げ', romaji: 'ge' }, { kana: 'ご', romaji: 'go' },
+            { kana: 'ざ', romaji: 'za' }, { kana: 'じ', romaji: 'ji' }, { kana: 'ず', romaji: 'zu' }, { kana: 'ぜ', romaji: 'ze' }, { kana: 'ぞ', romaji: 'zo' },
+            { kana: 'だ', romaji: 'da' }, { kana: 'ぢ', romaji: 'ji' }, { kana: 'づ', romaji: 'zu' }, { kana: 'で', romaji: 'de' }, { kana: 'ど', romaji: 'do' },
+            { kana: 'ば', romaji: 'ba' }, { kana: 'び', romaji: 'bi' }, { kana: 'ぶ', romaji: 'bu' }, { kana: 'べ', romaji: 'be' }, { kana: 'ぼ', romaji: 'bo' },
+            // 半濁音
+            { kana: 'ぱ', romaji: 'pa' }, { kana: 'ぴ', romaji: 'pi' }, { kana: 'ぷ', romaji: 'pu' }, { kana: 'ぺ', romaji: 'pe' }, { kana: 'ぽ', romaji: 'po' },
+            // 拗音
+            { kana: 'きゃ', romaji: 'kya' }, { kana: 'きゅ', romaji: 'kyu' }, { kana: 'きょ', romaji: 'kyo' },
+            { kana: 'しゃ', romaji: 'sha' }, { kana: 'しゅ', romaji: 'shu' }, { kana: 'しょ', romaji: 'sho' },
+            { kana: 'ちゃ', romaji: 'cha' }, { kana: 'ちゅ', romaji: 'chu' }, { kana: 'ちょ', romaji: 'cho' },
+            { kana: 'にゃ', romaji: 'nya' }, { kana: 'にゅ', romaji: 'nyu' }, { kana: 'にょ', romaji: 'nyo' },
+            { kana: 'ひゃ', romaji: 'hya' }, { kana: 'ひゅ', romaji: 'hyu' }, { kana: 'ひょ', romaji: 'hyo' },
+            { kana: 'みゃ', romaji: 'mya' }, { kana: 'みゅ', romaji: 'myu' }, { kana: 'みょ', romaji: 'myo' },
+            { kana: 'りゃ', romaji: 'rya' }, { kana: 'りゅ', romaji: 'ryu' }, { kana: 'りょ', romaji: 'ryo' },
+            { kana: 'ぎゃ', romaji: 'gya' }, { kana: 'ぎゅ', romaji: 'gyu' }, { kana: 'ぎょ', romaji: 'gyo' },
+            { kana: 'じゃ', romaji: 'ja' }, { kana: 'じゅ', romaji: 'ju' }, { kana: 'じょ', romaji: 'jo' },
+            { kana: 'びゃ', romaji: 'bya' }, { kana: 'びゅ', romaji: 'byu' }, { kana: 'びょ', romaji: 'byo' },
+            { kana: 'ぴゃ', romaji: 'pya' }, { kana: 'ぴゅ', romaji: 'pyu' }, { kana: 'ぴょ', romaji: 'pyo' }
+        ];
+
+        // メッセージ集
         const perfectMessages = [
-            "10/10 PERFECT!! You are officially a Hiragana Genius, Clara! 🌸✨ So proud of you! 🖤 - Ryuji",
-            "100%!! Absolutely flawless performance! My girl is unstoppable! 🥰🎉 - Ryuji",
-            "FULL MARKS!! Are you sure you're not Japanese already?! Amazing job Clara! 💖 - Ryuji",
-            "PERFECT SCORE! You deserve a big prize for this! Can't wait to celebrate with you! 🥂✨ - Ryuji"
+            "10/10 PERFECT!! You are officially a Hiragana Master, Clara! 🌸✨ So proud of you! 🖤 - Ryuji",
+            "100%!! Absolutely flawless! My girl is unstoppable! 🥰🎉 - Ryuji",
+            "FULL MARKS!! You nailed even the hardest ones! Amazing job Clara! 💖 - Ryuji"
         ];
 
         const highMessages = [
             "So close to perfection! Great job Clara! You're mastering this so fast! 💖 - Ryuji",
-            "Awesome score!! You're doing incredible, Clara! Keep going! 🖤 - Ryuji",
-            "Super impressive! Just a tiny step away from 10/10. Proud of you! 🌸 - Ryuji"
+            "Awesome score!! You're doing incredible, Clara! Keep going! 🖤 - Ryuji"
         ];
 
         const goodMessages = [
-            "Good effort Clara! Practice makes perfect, and you're getting better every time! 💪✨ - Ryuji",
-            "Nice try!! You're making solid progress. Let's do another round together! 💖 - Ryuji",
-            "You got this, Clara! Every mistake is just a step closer to mastering it! 🖤 - Ryuji"
+            "Good effort Clara! Hard mode is tough, but you're doing great! 💪✨ - Ryuji",
+            "Nice try!! Practice makes perfect. Let me know if you need hints! 🖤 - Ryuji"
         ];
 
         function shuffle(array) {
@@ -333,13 +384,42 @@
             return arr;
         }
 
-        let flashcardData = shuffle(allKanaData);
+        let currentDataSet = basicKanaData; // デフォルトはEasy Mode
+        let flashcardData = shuffle(currentDataSet);
         let quizData = [];
         let currentCardIndex = 0;
         let currentQuizIndex = 0;
         let score = 0;
-        let isAnswering = false; // 連打防止フラグ
+        let isAnswering = false;
 
+        // モード切替ボタン
+        const easyModeBtn = document.getElementById('easyModeBtn');
+        const hardModeBtn = document.getElementById('hardModeBtn');
+
+        easyModeBtn.addEventListener('click', () => {
+            easyModeBtn.classList.add('active');
+            hardModeBtn.classList.remove('active');
+            currentDataSet = basicKanaData;
+            resetAll();
+        });
+
+        hardModeBtn.addEventListener('click', () => {
+            hardModeBtn.classList.add('active');
+            easyModeBtn.classList.remove('active');
+            currentDataSet = [...basicKanaData, ...hardKanaData]; // Easy + Hard全合体
+            resetAll();
+        });
+
+        function resetAll() {
+            flashcardData = shuffle(currentDataSet);
+            currentCardIndex = 0;
+            updateCard();
+            if (!quizSection.classList.contains('hidden')) {
+                startQuiz();
+            }
+        }
+
+        // タブ切り替え
         const cardTabBtn = document.getElementById('cardTabBtn');
         const quizTabBtn = document.getElementById('quizTabBtn');
         const cardSection = document.getElementById('cardSection');
@@ -403,7 +483,7 @@
                 currentCardIndex++;
                 updateCard();
             } else {
-                flashcardData = shuffle(allKanaData);
+                flashcardData = shuffle(currentDataSet);
                 currentCardIndex = 0;
                 updateCard();
             }
@@ -418,7 +498,7 @@
         const feedbackText = document.getElementById('feedbackText');
 
         function startQuiz() {
-            quizData = shuffle(allKanaData).slice(0, 10);
+            quizData = shuffle(currentDataSet).slice(0, 10);
             currentQuizIndex = 0;
             score = 0;
             isAnswering = false;
@@ -427,7 +507,6 @@
 
         function loadQuizQuestion() {
             if (currentQuizIndex >= quizData.length) {
-                // 結果表示メッセージ選出
                 let msgList = goodMessages;
                 if (score === 10) msgList = perfectMessages;
                 else if (score >= 7) msgList = highMessages;
@@ -447,7 +526,7 @@
 
             let options = [currentItem.romaji];
             while (options.length < 4) {
-                const randomItem = allKanaData[Math.floor(Math.random() * allKanaData.length)];
+                const randomItem = currentDataSet[Math.floor(Math.random() * currentDataSet.length)];
                 if (!options.includes(randomItem.romaji)) {
                     options.push(randomItem.romaji);
                 }
@@ -482,7 +561,6 @@
                 feedbackOverlay.className = "feedback-overlay feedback-wrong show";
             }
 
-            // 0.8秒後に次の問題へ
             setTimeout(() => {
                 feedbackOverlay.className = "feedback-overlay";
                 isAnswering = false;
