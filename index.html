@@ -44,7 +44,6 @@
             text-align: center;
         }
 
-        /* ひらがな/カタカナ & Easy/Hard 切替エリア */
         .controls-container {
             display: flex;
             flex-direction: column;
@@ -92,7 +91,6 @@
             color: white;
         }
 
-        /* タブ切替（3つに増量！） */
         .tab-container {
             display: flex;
             gap: 5px;
@@ -133,7 +131,6 @@
             position: relative;
         }
 
-        /* フラッシュカード */
         .flashcard-wrapper {
             perspective: 1000px;
             width: 220px;
@@ -214,7 +211,6 @@
             transform: scale(0.9);
         }
 
-        /* クイズ部分 */
         .quiz-char {
             font-size: 4.5rem;
             color: #ff4d6d;
@@ -252,7 +248,6 @@
             font-weight: bold;
         }
 
-        /* 一覧表（Chart）用スタイル */
         .chart-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -291,7 +286,6 @@
             margin-top: 2px;
         }
 
-        /* ⭕️❌ オーバーレイ */
         .feedback-overlay {
             position: absolute;
             top: 0;
@@ -358,14 +352,12 @@
         </div>
     </div>
 
-    <!-- タブに「Chart 📊」を追加 -->
     <div class="tab-container">
         <button class="tab-btn active" id="cardTabBtn">Flashcards 🎴</button>
         <button class="tab-btn" id="quizTabBtn">Quiz Mode ✏️</button>
         <button class="tab-btn" id="chartTabBtn">Kana Chart 📊</button>
     </div>
 
-    <!-- 1. フラッシュカード画面 -->
     <div id="cardSection" class="content-card">
         <div class="flashcard-wrapper" id="cardWrapper">
             <div class="flashcard" id="flashcard">
@@ -385,7 +377,6 @@
         </div>
     </div>
 
-    <!-- 2. クイズ画面 -->
     <div id="quizSection" class="content-card hidden">
         <div class="quiz-char" id="quizChar">あ</div>
         <div class="options-grid" id="optionsGrid"></div>
@@ -397,7 +388,6 @@
         </div>
     </div>
 
-    <!-- 3. Kana Chart 一覧表画面 -->
     <div id="chartSection" class="content-card hidden">
         <div class="chart-grid" id="chartGrid"></div>
         <div style="font-size: 0.8rem; color: #ff758f; margin-top: 10px;">Tap any character to listen! 🔊</div>
@@ -405,35 +395,60 @@
 
     <script>
         const hEasy = [
-            { kana: 'あ', romaji: 'a', kata: 'ア' }, { kana: 'い', romaji: 'i', kata: 'イ' }, { kana: 'う', romaji: 'u', kata: 'ウ' }, { kana: 'え', romaji: 'e', kata: 'エ' }, { kana: 'お', romaji: 'o', kata: 'オ' },
-            { kana: 'か', romaji: 'ka', kata: 'カ' }, { kana: 'き', romaji: 'ki', kata: 'キ' }, { kana: 'く', romaji: 'ku', kata: 'ク' }, { kana: 'け', romaji: 'ke', kata: 'ケ' }, { kana: 'こ', romaji: 'ko', kata: 'コ' },
-            { kana: 'さ', romaji: 'sa', kata: 'サ' }, { kana: 'し', romaji: 'shi', kata: 'シ' }, { kana: 'す', romaji: 'su', kata: 'ス' }, { kana: 'せ', romaji: 'se', kata: 'セ' }, { kana: 'そ', romaji: 'so', kata: 'ソ' },
-            { kana: 'た', romaji: 'ta', kata: 'タ' }, { kana: 'ち', romaji: 'chi', kata: 'チ' }, { kana: 'つ', romaji: 'tsu', kata: 'ツ' }, { kana: 'て', romaji: 'te', kata: 'テ' }, { kana: 'と', romaji: 'to', kata: 'ト' },
-            { kana: 'な', romaji: 'na', kata: 'ナ' }, { kana: 'に', romaji: 'ni', kata: 'ニ' }, { kana: 'ぬ', romaji: 'nu', kata: 'ヌ' }, { kana: 'ね', romaji: 'ne', kata: 'ネ' }, { kana: 'の', romaji: 'no', kata: 'ノ' },
-            { kana: 'は', romaji: 'ha', kata: 'ハ' }, { kana: 'ひ', romaji: 'hi', kata: 'ヒ' }, { kana: 'ふ', romaji: 'fu', kata: 'フ' }, { kana: 'へ', romaji: 'he', kata: 'ヘ' }, { kana: 'ほ', romaji: 'ho', kata: 'ホ' },
-            { kana: 'ま', romaji: 'ma', kata: 'マ' }, { kana: 'み', romaji: 'mi', kata: 'ミ' }, { kana: 'む', romaji: 'mu', kata: 'ム' }, { kana: 'め', romaji: 'me', kata: 'メ' }, { kana: 'も', romaji: 'mo', kata: 'モ' },
-            { kana: 'や', romaji: 'ya', kata: 'ヤ' }, { kana: 'ゆ', romaji: 'yu', kata: 'ユ' }, { kana: 'よ', romaji: 'yo', kata: 'ヨ' },
-            { kana: 'ら', romaji: 'ra', kata: 'ラ' }, { kana: 'り', romaji: 'ri', kata: 'リ' }, { kana: 'る', romaji: 'ru', kata: 'ル' }, { kana: 'れ', romaji: 're', kata: 'レ' }, { kana: 'ろ', romaji: 'ro', kata: 'ロ' },
-            { kana: 'わ', romaji: 'wa', kata: 'ワ' }, { kana: 'を', romaji: 'wo', kata: 'ヲ' }, { kana: 'ん', romaji: 'n', kata: 'ン' }
+            { kana: 'あ', romaji: 'a' }, { kana: 'い', romaji: 'i' }, { kana: 'う', romaji: 'u' }, { kana: 'え', romaji: 'e' }, { kana: 'お', romaji: 'o' },
+            { kana: 'か', romaji: 'ka' }, { kana: 'き', romaji: 'ki' }, { kana: 'く', romaji: 'ku' }, { kana: 'け', romaji: 'ke' }, { kana: 'こ', romaji: 'ko' },
+            { kana: 'さ', romaji: 'sa' }, { kana: 'し', romaji: 'shi' }, { kana: 'す', romaji: 'su' }, { kana: 'せ', romaji: 'se' }, { kana: 'そ', romaji: 'so' },
+            { kana: 'た', romaji: 'ta' }, { kana: 'ち', romaji: 'chi' }, { kana: 'つ', romaji: 'tsu' }, { kana: 'て', romaji: 'te' }, { kana: 'と', romaji: 'to' },
+            { kana: 'な', romaji: 'na' }, { kana: 'に', romaji: 'ni' }, { kana: 'ぬ', romaji: 'nu' }, { kana: 'ね', romaji: 'ne' }, { kana: 'の', romaji: 'no' },
+            { kana: 'は', romaji: 'ha' }, { kana: 'ひ', romaji: 'hi' }, { kana: 'ふ', romaji: 'fu' }, { kana: 'へ', romaji: 'he' }, { kana: 'ほ', romaji: 'ho' },
+            { kana: 'ま', romaji: 'ma' }, { kana: 'み', romaji: 'mi' }, { kana: 'む', romaji: 'mu' }, { kana: 'め', romaji: 'me' }, { kana: 'も', romaji: 'mo' },
+            { kana: 'や', romaji: 'ya' }, { kana: 'ゆ', romaji: 'yu' }, { kana: 'よ', romaji: 'yo' },
+            { kana: 'ら', romaji: 'ra' }, { kana: 'り', romaji: 'ri' }, { kana: 'る', romaji: 'ru' }, { kana: 'れ', romaji: 're' }, { kana: 'ろ', romaji: 'ro' },
+            { kana: 'わ', romaji: 'wa' }, { kana: 'を', romaji: 'wo' }, { kana: 'ん', romaji: 'n' }
         ];
 
         const hHard = [
-            { kana: 'が', romaji: 'ga', kata: 'ガ' }, { kana: 'ぎ', romaji: 'gi', kata: 'ギ' }, { kana: 'ぐ', romaji: 'gu', kata: 'グ' }, { kana: 'げ', romaji: 'ge', kata: 'ゲ' }, { kana: 'ご', romaji: 'go', kata: 'ゴ' },
-            { kana: 'ざ', romaji: 'za', kata: 'ザ' }, { kana: 'じ', romaji: 'ji', kata: 'ジ' }, { kana: 'ず', romaji: 'zu', kata: 'ズ' }, { kana: 'ぜ', romaji: 'ze', kata: 'ゼ' }, { kana: 'ぞ', romaji: 'zo', kata: 'ゾ' },
-            { kana: 'だ', romaji: 'da', kata: 'ダ' }, { kana: 'ぢ', romaji: 'ji', kata: 'ヂ' }, { kana: 'づ', romaji: 'zu', kata: 'ヅ' }, { kana: 'で', romaji: 'de', kata: 'デ' }, { kana: 'ど', romaji: 'do', kata: 'ド' },
-            { kana: 'ば', romaji: 'ba', kata: 'バ' }, { kana: 'び', romaji: 'bi', kata: 'ビ' }, { kana: 'ぶ', romaji: 'bu', kata: 'ブ' }, { kana: 'べ', romaji: 'be', kata: 'ベ' }, { kana: 'ぼ', romaji: 'bo', kata: 'ボ' },
-            { kana: 'ぱ', romaji: 'pa', kata: 'パ' }, { kana: 'ぴ', romaji: 'pi', kata: 'ピ' }, { kana: 'ぷ', romaji: 'pu', kata: 'プ' }, { kana: 'ぺ', romaji: 'pe', kata: 'ペ' }, { kana: 'ぽ', romaji: 'po', kata: 'ポ' },
-            { kana: 'きゃ', romaji: 'kya', kata: 'キャ' }, { kana: 'きゅ', romaji: 'kyu', kata: 'キュ' }, { kana: 'きょ', romaji: 'kyo', kata: 'キョ' },
-            { kana: 'しゃ', romaji: 'sha', kata: 'シャ' }, { kana: 'しゅ', romaji: 'shu', kata: 'シュ' }, { kana: 'しょ', romaji: 'sho', kata: 'ショ' },
-            { kana: 'ちゃ', romaji: 'cha', kata: 'チャ' }, { kana: 'ちゅ', romaji: 'chu', kata: 'チュ' }, { kana: 'ちょ', romaji: 'cho', kata: 'チョ' },
-            { kana: 'にゃ', romaji: 'nya', kata: 'ニャ' }, { kana: 'にゅ', romaji: 'nyu', kata: 'ニュ' }, { kana: 'にょ', romaji: 'nyo', kata: 'ニョ' },
-            { kana: 'ひゃ', romaji: 'hya', kata: 'ヒャ' }, { kana: 'ひゅ', romaji: 'hyu', kata: 'ヒュ' }, { kana: 'ひょ', romaji: 'hyo', kata: 'ヒョ' },
-            { kana: 'みゃ', romaji: 'mya', kata: 'ミャ' }, { kana: 'みゅ', romaji: 'myu', kata: 'ミュ' }, { kana: 'みょ', romaji: 'myo', kata: 'ミョ' },
-            { kana: 'りゃ', romaji: 'rya', kata: 'リャ' }, { kana: 'りゅ', romaji: 'ryu', kata: 'リュ' }, { kana: 'りょ', romaji: 'ryo', kata: 'リョ' }
+            { kana: 'が', romaji: 'ga' }, { kana: 'ぎ', romaji: 'gi' }, { kana: 'ぐ', romaji: 'gu' }, { kana: 'げ', romaji: 'ge' }, { kana: 'ご', romaji: 'go' },
+            { kana: 'ざ', romaji: 'za' }, { kana: 'じ', romaji: 'ji' }, { kana: 'ず', romaji: 'zu' }, { kana: 'ぜ', romaji: 'ze' }, { kana: 'ぞ', romaji: 'zo' },
+            { kana: 'だ', romaji: 'da' }, { kana: 'ぢ', romaji: 'ji' }, { kana: 'づ', romaji: 'zu' }, { kana: 'で', romaji: 'de' }, { kana: 'ど', romaji: 'do' },
+            { kana: 'ば', romaji: 'ba' }, { kana: 'び', romaji: 'bi' }, { kana: 'ぶ', romaji: 'bu' }, { kana: 'べ', romaji: 'be' }, { kana: 'ぼ', romaji: 'bo' },
+            { kana: 'ぱ', romaji: 'pa' }, { kana: 'ぴ', romaji: 'pi' }, { kana: 'ぷ', romaji: 'pu' }, { kana: 'ぺ', romaji: 'pe' }, { kana: 'ぽ', romaji: 'po' },
+            { kana: 'きゃ', romaji: 'kya' }, { kana: 'きゅ', romaji: 'kyu' }, { kana: 'きょ', romaji: 'kyo' },
+            { kana: 'しゃ', romaji: 'sha' }, { kana: 'しゅ', romaji: 'shu' }, { kana: 'しょ', romaji: 'sho' },
+            { kana: 'ちゃ', romaji: 'cha' }, { kana: 'ちゅ', romaji: 'chu' }, { kana: 'ちょ', romaji: 'cho' },
+            { kana: 'にゃ', romaji: 'nya' }, { kana: 'にゅ', romaji: 'nyu' }, { kana: 'にょ', romaji: 'nyo' },
+            { kana: 'ひゃ', romaji: 'hya' }, { kana: 'ひゅ', romaji: 'hyu' }, { kana: 'ひょ', romaji: 'hyo' },
+            { kana: 'みゃ', romaji: 'mya' }, { kana: 'みゅ', romaji: 'myu' }, { kana: 'みょ', romaji: 'myo' },
+            { kana: 'りゃ', romaji: 'rya' }, { kana: 'りゅ', romaji: 'ryu' }, { kana: 'りょ', romaji: 'ryo' }
         ];
 
-        const kEasy = hEasy.map(item => ({ kana: item.kata, romaji: item.romaji }));
-        const kHard = hHard.map(item => ({ kana: item.kata, romaji: item.romaji }));
+        const kEasy = [
+            { kana: 'ア', romaji: 'a' }, { kana: 'イ', romaji: 'i' }, { kana: 'ウ', romaji: 'u' }, { kana: 'エ', romaji: 'e' }, { kana: 'オ', romaji: 'o' },
+            { kana: 'カ', romaji: 'ka' }, { kana: 'キ', romaji: 'ki' }, { kana: 'ク', romaji: 'ku' }, { kana: 'ケ', romaji: 'ke' }, { kana: 'コ', romaji: 'ko' },
+            { kana: 'サ', romaji: 'sa' }, { kana: 'シ', romaji: 'shi' }, { kana: 'ス', romaji: 'su' }, { kana: 'セ', romaji: 'se' }, { kana: 'ソ', romaji: 'so' },
+            { kana: 'タ', romaji: 'ta' }, { kana: 'チ', romaji: 'chi' }, { kana: 'ツ', romaji: 'tsu' }, { kana: 'テ', romaji: 'te' }, { kana: 'ト', romaji: 'to' },
+            { kana: 'ナ', romaji: 'na' }, { kana: 'ニ', romaji: 'ni' }, { kana: 'ヌ', romaji: 'nu' }, { kana: 'ネ', romaji: 'ne' }, { kana: 'ノ', romaji: 'no' },
+            { kana: 'ハ', romaji: 'ha' }, { kana: 'ヒ', romaji: 'hi' }, { kana: 'フ', romaji: 'fu' }, { kana: 'ヘ', romaji: 'he' }, { kana: 'ホ', romaji: 'ho' },
+            { kana: 'マ', romaji: 'ma' }, { kana: 'ミ', romaji: 'mi' }, { kana: 'ム', romaji: 'mu' }, { kana: 'メ', romaji: 'me' }, { kana: 'モ', romaji: 'mo' },
+            { kana: 'ヤ', romaji: 'ya' }, { kana: 'ユ', romaji: 'yu' }, { kana: 'ヨ', romaji: 'yo' },
+            { kana: 'ラ', romaji: 'ra' }, { kana: 'リ', romaji: 'ri' }, { kana: 'ル', romaji: 'ru' }, { kana: 'レ', romaji: 're' }, { kana: 'ロ', romaji: 'ro' },
+            { kana: 'ワ', romaji: 'wa' }, { kana: 'ヲ', romaji: 'wo' }, { kana: 'ン', romaji: 'n' }
+        ];
+
+        const kHard = [
+            { kana: 'ガ', romaji: 'ga' }, { kana: 'ギ', romaji: 'gi' }, { kana: 'グ', romaji: 'gu' }, { kana: 'ゲ', romaji: 'ge' }, { kana: 'ゴ', romaji: 'go' },
+            { kana: 'ザ', romaji: 'za' }, { kana: 'ジ', romaji: 'ji' }, { kana: 'ズ', romaji: 'zu' }, { kana: 'ゼ', romaji: 'ze' }, { kana: 'ゾ', romaji: 'zo' },
+            { kana: 'ダ', romaji: 'da' }, { kana: 'ヂ', romaji: 'ji' }, { kana: 'ヅ', romaji: 'zu' }, { kana: 'デ', romaji: 'de' }, { kana: 'ド', romaji: 'do' },
+            { kana: 'バ', romaji: 'ba' }, { kana: 'ビ', romaji: 'bi' }, { kana: 'ブ', romaji: 'bu' }, { kana: 'ベ', romaji: 'be' }, { kana: 'ボ', romaji: 'bo' },
+            { kana: 'パ', romaji: 'pa' }, { kana: 'ピ', romaji: 'pi' }, { kana: 'プ', romaji: 'pu' }, { kana: 'ペ', romaji: 'pe' }, { kana: 'ポ', romaji: 'po' },
+            { kana: 'キャ', romaji: 'kya' }, { kana: 'キュ', romaji: 'kyu' }, { kana: 'キョ', romaji: 'kyo' },
+            { kana: 'シャ', romaji: 'sha' }, { kana: 'シュ', romaji: 'shu' }, { kana: 'ショ', romaji: 'sho' },
+            { kana: 'チャ', romaji: 'cha' }, { kana: 'チュ', romaji: 'chu' }, { kana: 'チョ', romaji: 'cho' },
+            { kana: 'ニャ', romaji: 'nya' }, { kana: 'ニュ', romaji: 'nyu' }, { kana: 'ニョ', romaji: 'nyo' },
+            { kana: 'ヒャ', romaji: 'hya' }, { kana: 'ヒュ', romaji: 'hyu' }, { kana: 'ヒョ', romaji: 'hyo' },
+            { kana: 'ミャ', romaji: 'mya' }, { kana: 'ミュ', romaji: 'myu' }, { kana: 'ミョ', romaji: 'myo' },
+            { kana: 'リャ', romaji: 'rya' }, { kana: 'リュ', romaji: 'ryu' }, { kana: 'リョ', romaji: 'ryo' }
+        ];
 
         const perfectMessages = [
             "10/10 PERFECT!! You are officially a Kana Master, Clara! 🌸✨ So proud of you! 🖤 - Ryuji",
@@ -519,7 +534,6 @@
             }
         }
 
-        // タブ切り替え処理
         const cardTabBtn = document.getElementById('cardTabBtn');
         const quizTabBtn = document.getElementById('quizTabBtn');
         const chartTabBtn = document.getElementById('chartTabBtn');
@@ -565,7 +579,6 @@
             }
         }
 
-        // 1. フラッシュカード
         const flashcard = document.getElementById('flashcard');
         const cardWrapper = document.getElementById('cardWrapper');
         const cardChar = document.getElementById('cardChar');
@@ -605,7 +618,6 @@
             }
         });
 
-        // 2. クイズ
         const quizChar = document.getElementById('quizChar');
         const optionsGrid = document.getElementById('optionsGrid');
         const scoreBoard = document.getElementById('scoreBoard');
@@ -687,7 +699,6 @@
             }, 850);
         }
 
-        // 3. 一覧表（Chart）の描画処理
         const chartGrid = document.getElementById('chartGrid');
         function renderChart() {
             const currentSet = getActiveData();
