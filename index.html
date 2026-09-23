@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hiragana Practice for Clara 🌸</title>
+    <title>Kana Practice for Clara 🌸</title>
 
     <!-- iPhoneホーム画面追加用の設定 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Hiragana 🌸">
-    <!-- 桜アイコン（SVGをデータURIで直接指定） -->
+    <meta name="apple-mobile-web-app-title" content="Kana 🌸">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23ffe6eb%22/><text y=%22.9em%22 font-size=%2280%22>🌸</text></svg>">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
 
@@ -45,18 +44,25 @@
             text-align: center;
         }
 
-        /* モード選択（Easy Mode / Hard Mode） */
-        .mode-container {
+        /* ひらがな/カタカナ & Easy/Hard 切替エリア */
+        .controls-container {
             display: flex;
+            flex-direction: column;
+            align-items: center;
             gap: 10px;
             margin-bottom: 15px;
+        }
+
+        .toggle-group {
+            display: flex;
+            gap: 10px;
         }
 
         .mode-btn {
             border: 2px solid #ff758f;
             background: white;
-            padding: 8px 20px;
-            font-size: 0.9rem;
+            padding: 6px 16px;
+            font-size: 0.85rem;
             font-weight: bold;
             color: #ff758f;
             border-radius: 20px;
@@ -66,6 +72,23 @@
 
         .mode-btn.active {
             background: #ff758f;
+            color: white;
+        }
+
+        .script-btn {
+            border: 2px solid #ff4d6d;
+            background: white;
+            padding: 6px 18px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #ff4d6d;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .script-btn.active {
+            background: #ff4d6d;
             color: white;
         }
 
@@ -282,12 +305,20 @@
 </head>
 <body>
 
-    <h1>Hiragana for Clara 🌸</h1>
+    <h1>Japanese Kana for Clara 🌸</h1>
     <div class="subtitle">Learn & Test with Ryuji 🖤</div>
 
-    <div class="mode-container">
-        <button class="mode-btn active" id="easyModeBtn">Easy Mode</button>
-        <button class="mode-btn" id="hardModeBtn">Hard Mode</button>
+    <div class="controls-container">
+        <!-- ひらがな / カタカナ 切替 -->
+        <div class="toggle-group">
+            <button class="script-btn active" id="hiraganaBtn">Hiragana</button>
+            <button class="script-btn" id="katakanaBtn">Katakana</button>
+        </div>
+        <!-- Easy / Hard 切替 -->
+        <div class="toggle-group">
+            <button class="mode-btn active" id="easyModeBtn">Easy Mode</button>
+            <button class="mode-btn" id="hardModeBtn">Hard Mode</button>
+        </div>
     </div>
 
     <div class="tab-container">
@@ -326,7 +357,8 @@
     </div>
 
     <script>
-        const basicKanaData = [
+        // ひらがなデータ
+        const hEasy = [
             { kana: 'あ', romaji: 'a' }, { kana: 'い', romaji: 'i' }, { kana: 'う', romaji: 'u' }, { kana: 'え', romaji: 'e' }, { kana: 'お', romaji: 'o' },
             { kana: 'か', romaji: 'ka' }, { kana: 'き', romaji: 'ki' }, { kana: 'く', romaji: 'ku' }, { kana: 'け', romaji: 'ke' }, { kana: 'こ', romaji: 'ko' },
             { kana: 'さ', romaji: 'sa' }, { kana: 'し', romaji: 'shi' }, { kana: 'す', romaji: 'su' }, { kana: 'せ', romaji: 'se' }, { kana: 'そ', romaji: 'so' },
@@ -339,7 +371,7 @@
             { kana: 'わ', romaji: 'wa' }, { kana: 'を', romaji: 'wo' }, { kana: 'ん', romaji: 'n' }
         ];
 
-        const hardKanaData = [
+        const hHard = [
             { kana: 'が', romaji: 'ga' }, { kana: 'ぎ', romaji: 'gi' }, { kana: 'ぐ', romaji: 'gu' }, { kana: 'げ', romaji: 'ge' }, { kana: 'ご', romaji: 'go' },
             { kana: 'ざ', romaji: 'za' }, { kana: 'じ', romaji: 'ji' }, { kana: 'ず', romaji: 'zu' }, { kana: 'ぜ', romaji: 'ze' }, { kana: 'ぞ', romaji: 'zo' },
             { kana: 'だ', romaji: 'da' }, { kana: 'ぢ', romaji: 'ji' }, { kana: 'づ', romaji: 'zu' }, { kana: 'で', romaji: 'de' }, { kana: 'ど', romaji: 'do' },
@@ -358,8 +390,41 @@
             { kana: 'ぴゃ', romaji: 'pya' }, { kana: 'ぴゅ', romaji: 'pyu' }, { kana: 'ぴょ', romaji: 'pyo' }
         ];
 
+        // カタカナデータ
+        const kEasy = [
+            { kana: 'ア', romaji: 'a' }, { kana: 'イ', romaji: 'i' }, { kana: 'ウ', romaji: 'u' }, { kana: 'エ', romaji: 'e' }, { kana: 'オ', romaji: 'o' },
+            { kana: 'カ', romaji: 'ka' }, { kana: 'キ', romaji: 'ki' }, { kana: 'ク', romaji: 'ku' }, { kana: 'ケ', romaji: 'ke' }, { kana: 'コ', romaji: 'ko' },
+            { kana: 'サ', romaji: 'sa' }, { kana: 'シ', romaji: 'shi' }, { kana: 'ス', romaji: 'su' }, { kana: 'セ', romaji: 'se' }, { kana: 'ソ', romaji: 'so' },
+            { kana: 'タ', romaji: 'ta' }, { kana: 'チ', romaji: 'chi' }, { kana: 'ツ', romaji: 'tsu' }, { kana: 'テ', romaji: 'te' }, { kana: 'ト', romaji: 'to' },
+            { kana: 'ナ', romaji: 'na' }, { kana: 'ニ', romaji: 'ni' }, { kana: 'ヌ', romaji: 'nu' }, { kana: 'ネ', romaji: 'ne' }, { kana: 'ノ', romaji: 'no' },
+            { kana: 'ハ', romaji: 'ha' }, { kana: 'ヒ', romaji: 'hi' }, { kana: 'フ', romaji: 'fu' }, { kana: 'ヘ', romaji: 'he' }, { kana: 'ホ', romaji: 'ho' },
+            { kana: 'マ', romaji: 'ma' }, { kana: 'ミ', romaji: 'mi' }, { kana: 'ム', romaji: 'mu' }, { kana: 'メ', romaji: 'me' }, { kana: 'モ', romaji: 'mo' },
+            { kana: 'ヤ', romaji: 'ya' }, { kana: 'ユ', romaji: 'yu' }, { kana: 'ヨ', romaji: 'yo' },
+            { kana: 'ラ', romaji: 'ra' }, { kana: 'リ', romaji: 'ri' }, { kana: 'ル', romaji: 'ru' }, { kana: 'レ', romaji: 're' }, { kana: 'ロ', romaji: 'ro' },
+            { kana: 'ワ', romaji: 'wa' }, { kana: 'ヲ', romaji: 'wo' }, { kana: 'ン', romaji: 'n' }
+        ];
+
+        const kHard = [
+            { kana: 'ガ', romaji: 'ga' }, { kana: 'ギ', romaji: 'gi' }, { kana: 'グ', romaji: 'gu' }, { kana: 'ゲ', romaji: 'ge' }, { kana: 'ゴ', romaji: 'go' },
+            { kana: 'ザ', romaji: 'za' }, { kana: 'ジ', romaji: 'ji' }, { kana: 'ズ', romaji: 'zu' }, { kana: 'ゼ', romaji: 'ze' }, { kana: 'ゾ', romaji: 'zo' },
+            { kana: 'ダ', romaji: 'da' }, { kana: 'ヂ', romaji: 'ji' }, { kana: 'ヅ', romaji: 'zu' }, { kana: 'デ', romaji: 'de' }, { kana: 'ド', romaji: 'do' },
+            { kana: 'バ', romaji: 'ba' }, { kana: 'ビ', romaji: 'bi' }, { kana: 'ブ', romaji: 'bu' }, { kana: 'ベ', romaji: 'be' }, { kana: 'ボ', romaji: 'bo' },
+            { kana: 'パ', romaji: 'pa' }, { kana: 'ピ', romaji: 'pi' }, { kana: 'プ', romaji: 'pu' }, { kana: 'ペ', romaji: 'pe' }, { kana: 'ポ', romaji: 'po' },
+            { kana: 'キャ', romaji: 'kya' }, { kana: 'キュ', romaji: 'kyu' }, { kana: 'キョ', romaji: 'kyo' },
+            { kana: 'シャ', romaji: 'sha' }, { kana: 'シュ', romaji: 'shu' }, { kana: 'ショ', romaji: 'sho' },
+            { kana: 'チャ', romaji: 'cha' }, { kana: 'チュ', romaji: 'chu' }, { kana: 'チョ', romaji: 'cho' },
+            { kana: 'ニャ', romaji: 'nya' }, { kana: 'ニュ', romaji: 'nyu' }, { kana: 'ニョ', romaji: 'nyo' },
+            { kana: 'ヒャ', romaji: 'hya' }, { kana: 'ヒュ', romaji: 'hyu' }, { kana: 'ヒョ', romaji: 'hyo' },
+            { kana: 'ミャ', romaji: 'mya' }, { kana: 'ミュ', romaji: 'myu' }, { kana: 'ミョ', romaji: 'myo' },
+            { kana: 'リャ', romaji: 'rya' }, { kana: 'リュ', romaji: 'ryu' }, { kana: 'リョ', romaji: 'ryo' },
+            { kana: 'ギャ', romaji: 'gya' }, { kana: 'ギュ', romaji: 'gyu' }, { kana: 'ギョ', romaji: 'gyo' },
+            { kana: 'ジャ', romaji: 'ja' }, { kana: 'ジュ', romaji: 'ju' }, { kana: 'ジョ', romaji: 'jo' },
+            { kana: 'ビャ', romaji: 'bya' }, { kana: 'ビュ', romaji: 'byu' }, { kana: 'ビョ', romaji: 'byo' },
+            { kana: 'ピャ', romaji: 'pya' }, { kana: 'ピュ', romaji: 'pyu' }, { kana: 'ピョ', romaji: 'pyo' }
+        ];
+
         const perfectMessages = [
-            "10/10 PERFECT!! You are officially a Hiragana Master, Clara! 🌸✨ So proud of you! 🖤 - Ryuji",
+            "10/10 PERFECT!! You are officially a Kana Master, Clara! 🌸✨ So proud of you! 🖤 - Ryuji",
             "100%!! Absolutely flawless! My girl is unstoppable! 🥰🎉 - Ryuji",
             "FULL MARKS!! You nailed even the hardest ones! Amazing job Clara! 💖 - Ryuji"
         ];
@@ -370,8 +435,8 @@
         ];
 
         const goodMessages = [
-            "Good effort Clara! Hard mode is tough, but you're doing great! 💪✨ - Ryuji",
-            "Nice try!! Practice makes perfect. Let me know if you need hints! 🖤 - Ryuji"
+            "Good effort Clara! Practice makes perfect, and you're doing great! 💪✨ - Ryuji",
+            "Nice try!! Keep practicing and you'll get 10/10 next time! 🖤 - Ryuji"
         ];
 
         function shuffle(array) {
@@ -383,33 +448,58 @@
             return arr;
         }
 
-        let currentDataSet = basicKanaData;
-        let flashcardData = shuffle(currentDataSet);
+        let isKatakana = false;
+        let isHard = false;
+
+        function getActiveData() {
+            let easyData = isKatakana ? kEasy : hEasy;
+            let hardData = isKatakana ? kHard : hHard;
+            return isHard ? [...easyData, ...hardData] : easyData;
+        }
+
+        let flashcardData = shuffle(getActiveData());
         let quizData = [];
         let currentCardIndex = 0;
         let currentQuizIndex = 0;
         let score = 0;
         let isAnswering = false;
 
+        // ボタン要素
+        const hiraganaBtn = document.getElementById('hiraganaBtn');
+        const katakanaBtn = document.getElementById('katakanaBtn');
         const easyModeBtn = document.getElementById('easyModeBtn');
         const hardModeBtn = document.getElementById('hardModeBtn');
 
+        hiraganaBtn.addEventListener('click', () => {
+            isKatakana = false;
+            hiraganaBtn.classList.add('active');
+            katakanaBtn.classList.remove('active');
+            resetAll();
+        });
+
+        katakanaBtn.addEventListener('click', () => {
+            isKatakana = true;
+            katakanaBtn.classList.add('active');
+            hiraganaBtn.classList.remove('active');
+            resetAll();
+        });
+
         easyModeBtn.addEventListener('click', () => {
+            isHard = false;
             easyModeBtn.classList.add('active');
             hardModeBtn.classList.remove('active');
-            currentDataSet = basicKanaData;
             resetAll();
         });
 
         hardModeBtn.addEventListener('click', () => {
+            isHard = true;
             hardModeBtn.classList.add('active');
             easyModeBtn.classList.remove('active');
-            currentDataSet = [...basicKanaData, ...hardKanaData];
             resetAll();
         });
 
         function resetAll() {
-            flashcardData = shuffle(currentDataSet);
+            flashcardData = shuffle(getActiveData());
             currentCardIndex = 0;
             updateCard();
             if (!quizSection.classList.contains('hidden')) {
@@ -417,6 +507,7 @@
             }
         }
 
+        // タブ切り替え
         const cardTabBtn = document.getElementById('cardTabBtn');
         const quizTabBtn = document.getElementById('quizTabBtn');
         const cardSection = document.getElementById('cardSection');
@@ -446,6 +537,7 @@
             }
         }
 
+        // フラッシュカード
         const flashcard = document.getElementById('flashcard');
         const cardWrapper = document.getElementById('cardWrapper');
         const cardChar = document.getElementById('cardChar');
@@ -479,12 +571,13 @@
                 currentCardIndex++;
                 updateCard();
             } else {
-                flashcardData = shuffle(currentDataSet);
+                flashcardData = shuffle(getActiveData());
                 currentCardIndex = 0;
                 updateCard();
             }
         });
 
+        // クイズ
         const quizChar = document.getElementById('quizChar');
         const optionsGrid = document.getElementById('optionsGrid');
         const scoreBoard = document.getElementById('scoreBoard');
@@ -493,7 +586,8 @@
         const feedbackText = document.getElementById('feedbackText');
 
         function startQuiz() {
-            quizData = shuffle(currentDataSet).slice(0, 10);
+            const currentSet = getActiveData();
+            quizData = shuffle(currentSet).slice(0, 10);
             currentQuizIndex = 0;
             score = 0;
             isAnswering = false;
@@ -515,13 +609,14 @@
                 return;
             }
 
+            const currentSet = getActiveData();
             const currentItem = quizData[currentQuizIndex];
             quizChar.innerText = currentItem.kana;
             scoreBoard.innerText = `Score: ${score} / ${quizData.length}`;
 
             let options = [currentItem.romaji];
             while (options.length < 4) {
-                const randomItem = currentDataSet[Math.floor(Math.random() * currentDataSet.length)];
+                const randomItem = currentSet[Math.floor(Math.random() * currentSet.length)];
                 if (!options.includes(randomItem.romaji)) {
                     options.push(randomItem.romaji);
                 }
