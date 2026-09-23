@@ -899,7 +899,7 @@
             quizChar.innerText = currentItem.kana;
             scoreBoard.innerText = `Score: ${score} / ${quizData.length}`;
 
-            // 単語モードなら英語の意味（meaning）、文字モードならローマ字（romaji）を正解値に設定！
+            // 単語モード(words)の時は英語(meaning)、文字モード(easy/hard)の時はローマ字(romaji)
             const correctVal = (mode === 'words' && currentItem.meaning) ? currentItem.meaning : currentItem.romaji;
 
             let options = [correctVal];
