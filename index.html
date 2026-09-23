@@ -30,7 +30,7 @@
             position: relative;
         }
 
-        /* 🌸 サイドエリアの賑やかマスコット（左右の空白活用） */
+        /* 🌸 サイドエリアの賑やかマスコット */
         .side-mascot {
             position: fixed;
             bottom: 20px;
@@ -77,7 +77,6 @@
             position: relative;
         }
 
-        /* 五条先生浮遊 */
         .gojo-avatar {
             width: 65px;
             height: 65px;
@@ -105,7 +104,6 @@
             100% { filter: drop-shadow(0 0 20px #e879f9) drop-shadow(0 0 35px #818cf8); transform: scale(1.15); }
         }
 
-        /* リムル様プルプル */
         .rimuru-avatar {
             width: 60px;
             height: 55px;
@@ -469,6 +467,92 @@
             padding: 0 10px;
         }
 
+        /* 🌸 ゆめかわクリアモーダル (新デザイン) */
+        .modal-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(88, 28, 135, 0.45);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-container.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
+            border: 3px solid #f472b6;
+            border-radius: 30px;
+            padding: 30px 20px;
+            width: 90%;
+            max-width: 350px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(168, 85, 247, 0.4);
+            transform: scale(0.8) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .modal-container.show .modal-card {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #ec4899, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .modal-score {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #a855f7;
+            margin-bottom: 15px;
+        }
+
+        .modal-message {
+            font-size: 0.95rem;
+            color: #4c1d95;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: 20px;
+            background: #faf5ff;
+            padding: 12px;
+            border-radius: 15px;
+            border: 1px dashed #c084fc;
+        }
+
+        .modal-btn {
+            background: linear-gradient(135deg, #ec4899, #a855f7);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+            transition: transform 0.15s ease;
+        }
+
+        .modal-btn:active {
+            transform: scale(0.92);
+        }
+
         .hidden {
             display: none !important;
         }
@@ -531,7 +615,7 @@
             <div class="subtitle">Gojo & Rimuru & Ryuji's Class 💙</div>
         </div>
 
-        <!-- 転スラ リムル様（スライム形態） -->
+        <!-- 転スラ リムル様 -->
         <svg class="rimuru-avatar" id="rimuruAvatar" viewBox="0 0 100 80">
             <path d="M 10 50 Q 5 15 50 15 Q 95 15 90 50 Q 95 75 50 75 Q 5 75 10 50 Z" fill="#38bdf8" opacity="0.95"/>
             <ellipse cx="35" cy="45" rx="5" ry="8" fill="#0369a1"/>
@@ -596,6 +680,16 @@
     <div id="chartSection" class="content-card hidden">
         <div class="chart-grid" id="chartGrid"></div>
         <div style="font-size: 0.8rem; color: #a855f7; margin-top: 10px;">Tap any character/word to listen! 🔊</div>
+    </div>
+
+    <!-- 🌸 ゆめかわ結果発表モーダル -->
+    <div id="resultModal" class="modal-container">
+        <div class="modal-card">
+            <div class="modal-title" id="modalTitle">Quiz Finished! 🎉</div>
+            <div class="modal-score" id="modalScore">Score: 10 / 10</div>
+            <div class="modal-message" id="modalMessage">Great job, Clara!</div>
+            <button class="modal-btn" id="modalBtn">Play Again 🌸</button>
+        </div>
     </div>
 
     <script>
@@ -748,12 +842,12 @@
             { kana: 'バ', romaji: 'ba' }, { kana: 'ビ', romaji: 'bi' }, { kana: 'ブ', romaji: 'bu' }, { kana: 'ベ', romaji: 'be' }, { kana: 'ボ', romaji: 'bo' },
             { kana: 'パ', romaji: 'pa' }, { kana: 'ピ', romaji: 'pi' }, { kana: 'プ', romaji: 'pu' }, { kana: 'ペ', romaji: 'pe' }, { kana: 'ポ', romaji: 'po' },
             { kana: 'キャ', romaji: 'kya' }, { kana: 'キュ', romaji: 'kyu' }, { kana: 'キョ', romaji: 'kyo' },
-            { kana: 'シャ', romaji: 'sha' }, { kana: 'しゅ', romaji: 'shu' }, { kana: 'しょ', romaji: 'sho' },
-            { kana: 'チャ', romaji: 'cha' }, { kana: 'チュ', romaji: 'chu' }, { kana: 'チョ', romaji: 'cho' },
-            { kana: 'ニャ', romaji: 'nya' }, { kana: 'ニュ', romaji: 'nyu' }, { kana: 'ニョ', romaji: 'nyo' },
-            { kana: 'ヒャ', romaji: 'hya' }, { kana: 'ヒュ', romaji: 'hyu' }, { kana: 'ヒョ', romaji: 'hyo' },
-            { kana: 'ミャ', romaji: 'mya' }, { kana: 'ミュ', romaji: 'myu' }, { kana: 'ミョ', romaji: 'myo' },
-            { kana: 'リャ', romaji: 'rya' }, { kana: 'リュ', romaji: 'ryu' }, { kana: 'リョ', romaji: 'ryo' }
+            { kana: 'しゃ', romaji: 'sha' }, { kana: 'しゅ', romaji: 'shu' }, { kana: 'しょ', romaji: 'sho' },
+            { kana: 'ちゃ', romaji: 'cha' }, { kana: 'ちゅ', romaji: 'chu' }, { kana: 'ちょ', romaji: 'cho' },
+            { kana: 'にゃ', romaji: 'nya' }, { kana: 'にゅ', romaji: 'nyu' }, { kana: 'にょ', romaji: 'nyo' },
+            { kana: 'ひゃ', romaji: 'hya' }, { kana: 'ひゅ', romaji: 'hyu' }, { kana: 'ひょ', romaji: 'hyo' },
+            { kana: 'みゃ', romaji: 'mya' }, { kana: 'ミュ', romaji: 'myu' }, { kana: 'みょ', romaji: 'myo' },
+            { kana: 'りゃ', romaji: 'rya' }, { kana: 'りゅ', romaji: 'ryu' }, { kana: 'りょ', romaji: 'ryo' }
         ];
 
         const kWords = [
@@ -911,13 +1005,17 @@
         const gojoAvatar = document.getElementById('gojoAvatar');
         const rimuruAvatar = document.getElementById('rimuruAvatar');
 
-        // 五条先生タップアクション（ボイスなし・輝き演出のみ）
+        const resultModal = document.getElementById('resultModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalScore = document.getElementById('modalScore');
+        const modalMessage = document.getElementById('modalMessage');
+        const modalBtn = document.getElementById('modalBtn');
+
         gojoAvatar.addEventListener('click', () => {
             gojoAvatar.classList.add('domain-active');
             setTimeout(() => gojoAvatar.classList.remove('domain-active'), 2000);
         });
 
-        // リムル様タップアクション（跳ねるアクション）
         rimuruAvatar.addEventListener('click', () => {
             rimuruAvatar.classList.add('jump-active');
             setTimeout(() => rimuruAvatar.classList.remove('jump-active'), 1500);
@@ -1102,8 +1200,11 @@
         function loadQuizQuestion() {
             if (currentQuizIndex >= quizData.length) {
                 let msgList = goodMessages;
+                let titleText = "Quiz Finished! 🎉";
+
                 if (score === quizData.length) {
                     msgList = perfectMessages;
+                    titleText = "Domain Expansion!! 🌸✨";
                     gojoAvatar.classList.add('domain-active');
                     rimuruAvatar.classList.add('jump-active');
                     setTimeout(() => {
@@ -1112,14 +1213,16 @@
                     }, 4000);
                 } else if (score >= Math.floor(quizData.length * 0.7)) {
                     msgList = highMessages;
+                    titleText = "Great Job!! 🥰";
                 }
                 
                 const finalMsg = msgList[Math.floor(Math.random() * msgList.length)];
 
-                setTimeout(() => {
-                    alert(`Quiz Finished! 🎉\nYour Score: ${score} / ${quizData.length}\n\n"${finalMsg}"`);
-                    startQuiz();
-                }, 300);
+                // 🌸 ゆめかわモーダルを表示
+                modalTitle.innerText = titleText;
+                modalScore.innerText = `Score: ${score} / ${quizData.length}`;
+                modalMessage.innerText = finalMsg;
+                resultModal.classList.add('show');
                 return;
             }
 
@@ -1149,6 +1252,11 @@
                 optionsGrid.appendChild(btn);
             });
         }
+
+        modalBtn.addEventListener('click', () => {
+            resultModal.classList.remove('show');
+            startQuiz();
+        });
 
         function checkAnswer(selected, correct) {
             if (isAnswering) return;
