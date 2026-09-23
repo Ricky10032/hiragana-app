@@ -563,7 +563,7 @@
 
         const kHard = [
             { kana: 'ガ', romaji: 'ga' }, { kana: 'ギ', romaji: 'gi' }, { kana: 'グ', romaji: 'gu' }, { kana: 'ゲ', romaji: 'ge' }, { kana: 'ゴ', romaji: 'go' },
-            { kana: 'ザ', romaji: 'za' }, { kana: 'ジ', romaji: 'ji' }, { kana: 'ズ', romaji: 'zu' }, { kana: 'ゼ', romaji: 'ze' }, { kana: 'ゾ', romaji: 'zo' },
+            { kana: 'ザ', romaji: 'za' }, { kana: 'ジ', romaji: 'ji' }, { kana: 'ズ', romaji: 'zu' }, { kana: 'ぜ', romaji: 'ze' }, { kana: 'ゾ', romaji: 'zo' },
             { kana: 'ダ', romaji: 'da' }, { kana: 'ヂ', romaji: 'ji' }, { kana: 'ヅ', romaji: 'zu' }, { kana: 'デ', romaji: 'de' }, { kana: 'ド', romaji: 'do' },
             { kana: 'バ', romaji: 'ba' }, { kana: 'ビ', romaji: 'bi' }, { kana: 'ブ', romaji: 'bu' }, { kana: 'ベ', romaji: 'be' }, { kana: 'ボ', romaji: 'bo' },
             { kana: 'パ', romaji: 'pa' }, { kana: 'ピ', romaji: 'pi' }, { kana: 'プ', romaji: 'pu' }, { kana: 'ペ', romaji: 'pe' }, { kana: 'ポ', romaji: 'po' },
@@ -813,13 +813,41 @@
             renderChart();
         });
 
+        // 🌸 AI・端末最良ボイス指定＋高ピッチチューニングで可愛く再生！
         function speakKana(text) {
             if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // 再生中の音声を一度キャンセル
+
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'ja-JP';
-                utterance.rate = 0.8;
+
+                const voices = window.speechSynthesis.getVoices();
+                // 女性・高品質ボイスを優先選択
+                const cuteVoice = voices.find(v => 
+                    v.lang.includes('ja') && (
+                        v.name.includes('Kyoko') || 
+                        v.name.includes('Google') || 
+                        v.name.includes('Natural') || 
+                        v.name.includes('Otoya') ||
+                        v.name.includes('Siri')
+                    )
+                ) || voices.find(v => v.lang.includes('ja'));
+
+                if (cuteVoice) {
+                    utterance.voice = cuteVoice;
+                }
+
+                utterance.pitch = 1.25; // 声の高さを少し上げてアニメ声風に！
+                utterance.rate = 0.85;  // ほんのりゆっくりでクリアに！
+
                 window.speechSynthesis.speak(utterance);
             }
+        }
+
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = () => {
+                window.speechSynthesis.getVoices();
+            };
         }
 
         const flashcard = document.getElementById('flashcard');
@@ -899,7 +927,6 @@
             quizChar.innerText = currentItem.kana;
             scoreBoard.innerText = `Score: ${score} / ${quizData.length}`;
 
-            // 単語モード(words)の時は英語(meaning)、文字モード(easy/hard)の時はローマ字(romaji)
             const correctVal = (mode === 'words' && currentItem.meaning) ? currentItem.meaning : currentItem.romaji;
 
             let options = [correctVal];
