@@ -19,6 +19,7 @@
             flex-direction: column;
             align-items: center;
             user-select: none;
+            overflow-x: hidden;
         }
 
         h1 {
@@ -72,8 +73,10 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            position: relative;
         }
 
+        /* フラッシュカード */
         .flashcard-wrapper {
             perspective: 1000px;
             width: 220px;
@@ -147,13 +150,20 @@
             justify-content: center;
             align-items: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.1s ease;
         }
 
+        .nav-btn:active {
+            transform: scale(0.9);
+        }
+
+        /* クイズ部分 */
         .quiz-char {
             font-size: 4.5rem;
             color: #ff4d6d;
             font-weight: bold;
             margin-bottom: 20px;
+            transition: transform 0.2s ease;
         }
 
         .options-grid {
@@ -176,7 +186,7 @@
         }
 
         .option-btn:active {
-            transform: scale(0.95);
+            transform: scale(0.92);
         }
 
         .score-board {
@@ -184,6 +194,52 @@
             font-size: 0.95rem;
             color: #ff758f;
             font-weight: bold;
+        }
+
+        /* ⭕️❌ オーバーレイアニメーション */
+        .feedback-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 20;
+        }
+
+        .feedback-overlay.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .feedback-correct {
+            background: rgba(255, 230, 235, 0.92);
+            color: #ff2a55;
+        }
+
+        .feedback-wrong {
+            background: rgba(240, 240, 240, 0.92);
+            color: #888;
+        }
+
+        .feedback-symbol {
+            font-size: 6rem;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .feedback-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 10px;
         }
 
         .hidden {
@@ -201,6 +257,7 @@
         <button class="tab-btn" id="quizTabBtn">2. Quiz Mode ✏️</button>
     </div>
 
+    <!-- フラッシュカード画面 -->
     <div id="cardSection" class="content-card">
         <div class="flashcard-wrapper" id="cardWrapper">
             <div class="flashcard" id="flashcard">
@@ -220,14 +277,20 @@
         </div>
     </div>
 
+    <!-- クイズ画面 -->
     <div id="quizSection" class="content-card hidden">
         <div class="quiz-char" id="quizChar">あ</div>
         <div class="options-grid" id="optionsGrid"></div>
         <div class="score-board" id="scoreBoard">Score: 0 / 10</div>
+
+        <!-- 正解・不正解ポップアップ -->
+        <div id="feedbackOverlay" class="feedback-overlay">
+            <div class="feedback-symbol" id="feedbackSymbol">⭕️</div>
+            <div class="feedback-text" id="feedbackText">Great!</div>
+        </div>
     </div>
 
     <script>
-        // ひらがな基本50音（46文字）完全データセット
         const allKanaData = [
             { kana: 'あ', romaji: 'a' }, { kana: 'い', romaji: 'i' }, { kana: 'う', romaji: 'u' }, { kana: 'え', romaji: 'e' }, { kana: 'お', romaji: 'o' },
             { kana: 'か', romaji: 'ka' }, { kana: 'き', romaji: 'ki' }, { kana: 'く', romaji: 'ku' }, { kana: 'け', romaji: 'ke' }, { kana: 'こ', romaji: 'ko' },
@@ -241,7 +304,26 @@
             { kana: 'わ', romaji: 'wa' }, { kana: 'を', romaji: 'wo' }, { kana: 'ん', romaji: 'n' }
         ];
 
-        // 配列をシャッフルする関数
+        // 10問終了後の褒めメッセージ（スコア別で大量用意！）
+        const perfectMessages = [
+            "10/10 PERFECT!! You are officially a Hiragana Genius, Clara! 🌸✨ So proud of you! 🖤 - Ryuji",
+            "100%!! Absolutely flawless performance! My girl is unstoppable! 🥰🎉 - Ryuji",
+            "FULL MARKS!! Are you sure you're not Japanese already?! Amazing job Clara! 💖 - Ryuji",
+            "PERFECT SCORE! You deserve a big prize for this! Can't wait to celebrate with you! 🥂✨ - Ryuji"
+        ];
+
+        const highMessages = [
+            "So close to perfection! Great job Clara! You're mastering this so fast! 💖 - Ryuji",
+            "Awesome score!! You're doing incredible, Clara! Keep going! 🖤 - Ryuji",
+            "Super impressive! Just a tiny step away from 10/10. Proud of you! 🌸 - Ryuji"
+        ];
+
+        const goodMessages = [
+            "Good effort Clara! Practice makes perfect, and you're getting better every time! 💪✨ - Ryuji",
+            "Nice try!! You're making solid progress. Let's do another round together! 💖 - Ryuji",
+            "You got this, Clara! Every mistake is just a step closer to mastering it! 🖤 - Ryuji"
+        ];
+
         function shuffle(array) {
             let arr = [...array];
             for (let i = arr.length - 1; i > 0; i--) {
@@ -251,11 +333,12 @@
             return arr;
         }
 
-        let flashcardData = shuffle(allKanaData); // フラッシュカード用シャッフル
-        let quizData = [];                        // クイズ用シャッフル
+        let flashcardData = shuffle(allKanaData);
+        let quizData = [];
         let currentCardIndex = 0;
         let currentQuizIndex = 0;
         let score = 0;
+        let isAnswering = false; // 連打防止フラグ
 
         const cardTabBtn = document.getElementById('cardTabBtn');
         const quizTabBtn = document.getElementById('quizTabBtn');
@@ -286,6 +369,7 @@
             }
         }
 
+        // フラッシュカード
         const flashcard = document.getElementById('flashcard');
         const cardWrapper = document.getElementById('cardWrapper');
         const cardChar = document.getElementById('cardChar');
@@ -319,28 +403,41 @@
                 currentCardIndex++;
                 updateCard();
             } else {
-                // 最後まで行ったら再度シャッフルして最初へ
                 flashcardData = shuffle(allKanaData);
                 currentCardIndex = 0;
                 updateCard();
             }
         });
 
+        // クイズ
         const quizChar = document.getElementById('quizChar');
         const optionsGrid = document.getElementById('optionsGrid');
         const scoreBoard = document.getElementById('scoreBoard');
+        const feedbackOverlay = document.getElementById('feedbackOverlay');
+        const feedbackSymbol = document.getElementById('feedbackSymbol');
+        const feedbackText = document.getElementById('feedbackText');
 
         function startQuiz() {
-            quizData = shuffle(allKanaData).slice(0, 10); // 毎回ランダムで10問抽出
+            quizData = shuffle(allKanaData).slice(0, 10);
             currentQuizIndex = 0;
             score = 0;
+            isAnswering = false;
             loadQuizQuestion();
         }
 
         function loadQuizQuestion() {
             if (currentQuizIndex >= quizData.length) {
-                alert(`Quiz Finished! 🎉\nYour Score: ${score} / ${quizData.length}\n\n"Amazing job, Clara! Super proud of you! 🖤" - Ryuji`);
-                startQuiz(); // 再びランダムで10問セットしてリセット
+                // 結果表示メッセージ選出
+                let msgList = goodMessages;
+                if (score === 10) msgList = perfectMessages;
+                else if (score >= 7) msgList = highMessages;
+                
+                const finalMsg = msgList[Math.floor(Math.random() * msgList.length)];
+
+                setTimeout(() => {
+                    alert(`Quiz Finished! 🎉\nYour Score: ${score} / ${quizData.length}\n\n"${finalMsg}"`);
+                    startQuiz();
+                }, 300);
                 return;
             }
 
@@ -368,12 +465,30 @@
         }
 
         function checkAnswer(selected, correct) {
+            if (isAnswering) return;
+            isAnswering = true;
+
             speakKana(quizData[currentQuizIndex].kana);
-            if (selected === correct) {
+
+            const isCorrect = selected === correct;
+            if (isCorrect) {
                 score++;
+                feedbackSymbol.innerText = "⭕️";
+                feedbackText.innerText = "Great!";
+                feedbackOverlay.className = "feedback-overlay feedback-correct show";
+            } else {
+                feedbackSymbol.innerText = "❌";
+                feedbackText.innerText = `Correct: ${correct}`;
+                feedbackOverlay.className = "feedback-overlay feedback-wrong show";
             }
-            currentQuizIndex++;
-            loadQuizQuestion();
+
+            // 0.8秒後に次の問題へ
+            setTimeout(() => {
+                feedbackOverlay.className = "feedback-overlay";
+                isAnswering = false;
+                currentQuizIndex++;
+                loadQuizQuestion();
+            }, 850);
         }
 
         updateCard();
