@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiragana Practice for Clara 🌸</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(180deg, #ffe6eb 0%, #fff0f3 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            user-select: none;
+        }
+
+        h1 {
+            color: #ff4d6d;
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #ff758f;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* タブ切替ボタン */
+        .tab-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            background: white;
+            padding: 5px;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.15);
+        }
+
+        .tab-btn {
+            border: none;
+            background: transparent;
+            padding: 10px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #ff758f;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: #ff4d6d;
+            color: white;
+        }
+
+        /* カード・クイズ共通コンテナ */
+        .content-card {
+            background: white;
+            width: 100%;
+            max-width: 360px;
+            border-radius: 25px;
+            padding: 30px 20px;
+            box-shadow: 0 10px 25px rgba(255, 77, 109, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* フラッシュカード（3Dフリップ） */
+        .flashcard-wrapper {
+            perspective: 1000px;
+            width: 220px;
+            height: 220px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 3px solid #ffccd5;
+            background: #fff5f7;
+        }
+
+        .card-front .char {
+            font-size: 5rem;
+            color: #ff4d6d;
+            font-weight: bold;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background: #ff4d6d;
+            color: white;
+            border-color: #ff4d6d;
+        }
+
+        .card-back .romaji {
+            font-size: 3.5rem;
+            font-weight: bold;
+        }
+
+        .card-nav {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            background: #ff758f;
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* クイズ部分 */
+        .quiz-char {
+            font-size: 4.5rem;
+            color: #ff4d6d;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .option-btn {
+            background: #fff5f7;
+            border: 2px solid #ffccd5;
+            color: #ff4d6d;
+            padding: 15px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:active {
+            transform: scale(0.95);
+        }
+
+        .score-board {
+            margin-top: 15px;
+            font-size: 0.95rem;
+            color: #ff758f;
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Hiragana for Clara 🌸</h1>
+    <div class="subtitle">Learn & Test with Ryuji 🖤</div>
+
+    <!-- タブ切り替え -->
+    <div class="tab-container">
+        <button class="tab-btn active" id="cardTabBtn">1. Flashcards 🎴</button>
+        <button class="tab-btn" id="quizTabBtn">2. Quiz Mode ✏️</button>
+    </div>
+
+    <!-- フラッシュカード画面 -->
+    <div id="cardSection" class="content-card">
+        <div class="flashcard-wrapper" id="cardWrapper">
+            <div class="flashcard" id="flashcard">
+                <div class="card-face card-front">
+                    <div class="char" id="cardChar">あ</div>
+                    <span style="font-size: 0.8rem; color: #ff758f; margin-top: 10px;">Tap to flip 🔄</span>
+                </div>
+                <div class="card-face card-back">
+                    <div class="romaji" id="cardRomaji">a</div>
+                </div>
+            </div>
+        </div>
+        <div class="card-nav">
+            <button class="nav-btn" id="prevCardBtn">❮</button>
+            <span id="cardCounter" style="color: #ff758f; font-weight: bold;">1 / 10</span>
+            <button class="nav-btn" id="nextCardBtn">❯</button>
+        </div>
+    </div>
+
+    <!-- クイズ画面 -->
+    <div id="quizSection" class="content-card hidden">
+        <div class="quiz-char" id="quizChar">あ</div>
+        <div class="options-grid" id="optionsGrid">
+            <!-- ボタンが自動生成される -->
+        </div>
+        <div class="score-board" id="scoreBoard">Score: 0 / 10</div>
+    </div>
+
+    <script>
+        // 基本のひらがなデータセット（あ行〜か行）
+        const kanaData = [
+            { kana: 'あ', romaji: 'a' },
+            { kana: 'い', romaji: 'i' },
+            { kana: 'う', romaji: 'u' },
+            { kana: 'え', romaji: 'e' },
+            { kana: 'お', romaji: 'o' },
+            { kana: 'か', romaji: 'ka' },
+            { kana: 'き', romaji: 'ki' },
+            { kana: 'く', romaji: 'ku' },
+            { kana: 'け', romaji: 'ke' },
+            { kana: 'こ', romaji: 'ko' }
+        ];
+
+        let currentCardIndex = 0;
+        let currentQuizIndex = 0;
+        let score = 0;
+
+        // --- タブ切り替え ---
+        const cardTabBtn = document.getElementById('cardTabBtn');
+        const quizTabBtn = document.getElementById('quizTabBtn');
+        const cardSection = document.getElementById('cardSection');
+        const quizSection = document.getElementById('quizSection');
+
+        cardTabBtn.addEventListener('click', () => {
+            cardTabBtn.classList.add('active');
+            quizTabBtn.classList.remove('active');
+            cardSection.classList.remove('hidden');
+            quizSection.classList.add('hidden');
+        });
+
+        quizTabBtn.addEventListener('click', () => {
+            quizTabBtn.classList.add('active');
+            cardTabBtn.classList.remove('active');
+            quizSection.classList.remove('hidden');
+            cardSection.classList.add('hidden');
+            startQuiz();
+        });
+
+        // --- 音声読み上げ（Text-to-Speech） ---
+        function speakKana(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'ja-JP';
+                utterance.rate = 0.8; // 聞き取りやすく少しゆっくり
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // --- フラッシュカード処理 ---
+        const flashcard = document.getElementById('flashcard');
+        const cardWrapper = document.getElementById('cardWrapper');
+        const cardChar = document.getElementById('cardChar');
+        const cardRomaji = document.getElementById('cardRomaji');
+        const cardCounter = document.getElementById('cardCounter');
+
+        function updateCard() {
+            flashcard.classList.remove('flipped');
+            setTimeout(() => {
+                const item = kanaData[currentCardIndex];
+                cardChar.innerText = item.kana;
+                cardRomaji.innerText = item.romaji;
+                cardCounter.innerText = `${currentCardIndex + 1} / ${kanaData.length}`;
+            }, 150);
+        }
+
+        cardWrapper.addEventListener('click', () => {
+            flashcard.classList.toggle('flipped');
+            speakKana(kanaData[currentCardIndex].kana);
+        });
+
+        document.getElementById('prevCardBtn').addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                updateCard();
+            }
+        });
+
+        document.getElementById('nextCardBtn').addEventListener('click', () => {
+            if (currentCardIndex < kanaData.length - 1) {
+                currentCardIndex++;
+                updateCard();
+            }
+        });
+
+        // --- クイズ処理 ---
+        const quizChar = document.getElementById('quizChar');
+        const optionsGrid = document.getElementById('optionsGrid');
+        const scoreBoard = document.getElementById('scoreBoard');
+
+        function startQuiz() {
+            currentQuizIndex = 0;
+            score = 0;
+            loadQuizQuestion();
+        }
+
+        function loadQuizQuestion() {
+            if (currentQuizIndex >= kanaData.length) {
+                // クイズ終了
+                alert(`Quiz Finished! 🎉\nYour Score: ${score} / ${kanaData.length}\n\n"Amazing job, Clara! Super proud of you! 🖤" - Ryuji`);
+                startQuiz();
+                return;
+            }
+
+            const currentItem = kanaData[currentQuizIndex];
+            quizChar.innerText = currentItem.kana;
+            scoreBoard.innerText = `Score: ${score} / ${kanaData.length}`;
+
+            // 選択肢の生成（正解1つ + ランダムダミー3つ）
+            let options = [currentItem.romaji];
+            while (options.length < 4) {
+                const randomItem = kanaData[Math.floor(Math.random() * kanaData.length)];
+                if (!options.includes(randomItem.romaji)) {
+                    options.push(randomItem.romaji);
+                }
+            }
+            // シャッフル
+            options.sort(() => Math.random() - 0.5);
+
+            optionsGrid.innerHTML = '';
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.addEventListener('click', () => checkAnswer(opt, currentItem.romaji));
+                optionsGrid.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selected, correct) {
+            speakKana(kanaData[currentQuizIndex].kana);
+            if (selected === correct) {
+                score++;
+            }
+            currentQuizIndex++;
+            loadQuizQuestion();
+        }
+
+        // 初期化
+        updateCard();
+    </script>
+</body>
+</html>
