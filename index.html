@@ -54,13 +54,15 @@
 
         .toggle-group {
             display: flex;
-            gap: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .mode-btn {
             border: 2px solid #ff758f;
             background: white;
-            padding: 6px 16px;
+            padding: 6px 14px;
             font-size: 0.85rem;
             font-weight: bold;
             color: #ff758f;
@@ -77,7 +79,7 @@
         .script-btn {
             border: 2px solid #ff4d6d;
             background: white;
-            padding: 6px 18px;
+            padding: 6px 16px;
             font-size: 0.9rem;
             font-weight: bold;
             color: #ff4d6d;
@@ -133,7 +135,7 @@
 
         .flashcard-wrapper {
             perspective: 1000px;
-            width: 220px;
+            width: 250px;
             height: 220px;
             cursor: pointer;
             margin-bottom: 20px;
@@ -163,12 +165,15 @@
             align-items: center;
             border: 3px solid #ffccd5;
             background: #fff5f7;
+            padding: 10px;
         }
 
         .card-front .char {
-            font-size: 4.5rem;
+            font-size: 3.2rem;
             color: #ff4d6d;
             font-weight: bold;
+            text-align: center;
+            word-break: break-all;
         }
 
         .card-back {
@@ -179,8 +184,16 @@
         }
 
         .card-back .romaji {
-            font-size: 3rem;
+            font-size: 2rem;
             font-weight: bold;
+            text-align: center;
+        }
+
+        .card-back .meaning {
+            font-size: 1.1rem;
+            margin-top: 8px;
+            opacity: 0.95;
+            text-align: center;
         }
 
         .card-nav {
@@ -212,10 +225,12 @@
         }
 
         .quiz-char {
-            font-size: 4.5rem;
+            font-size: 3.2rem;
             color: #ff4d6d;
             font-weight: bold;
             margin-bottom: 20px;
+            text-align: center;
+            word-break: break-all;
         }
 
         .options-grid {
@@ -229,12 +244,14 @@
             background: #fff5f7;
             border: 2px solid #ffccd5;
             color: #ff4d6d;
-            padding: 15px;
-            font-size: 1.2rem;
+            padding: 14px 6px;
+            font-size: 1rem;
             font-weight: bold;
             border-radius: 15px;
             cursor: pointer;
             transition: all 0.2s ease;
+            text-align: center;
+            word-break: break-all;
         }
 
         .option-btn:active {
@@ -250,7 +267,7 @@
 
         .chart-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 8px;
             width: 100%;
             max-height: 400px;
@@ -275,15 +292,19 @@
         }
 
         .chart-main {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: bold;
             color: #ff4d6d;
+            text-align: center;
+            word-break: break-all;
         }
 
         .chart-sub {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #ff758f;
             margin-top: 2px;
+            text-align: center;
+            word-break: break-all;
         }
 
         .feedback-overlay {
@@ -326,9 +347,11 @@
         }
 
         .feedback-text {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: bold;
             margin-top: 10px;
+            text-align: center;
+            padding: 0 10px;
         }
 
         .hidden {
@@ -347,8 +370,9 @@
             <button class="script-btn" id="katakanaBtn">Katakana</button>
         </div>
         <div class="toggle-group">
-            <button class="mode-btn active" id="easyModeBtn">Easy Mode</button>
-            <button class="mode-btn" id="hardModeBtn">Hard Mode</button>
+            <button class="mode-btn active" id="easyModeBtn">Easy</button>
+            <button class="mode-btn" id="hardModeBtn">Hard</button>
+            <button class="mode-btn" id="wordsModeBtn">Words (100) 🌸</button>
         </div>
     </div>
 
@@ -367,6 +391,7 @@
                 </div>
                 <div class="card-face card-back">
                     <div class="romaji" id="cardRomaji">a</div>
+                    <div class="meaning" id="cardMeaning"></div>
                 </div>
             </div>
         </div>
@@ -390,7 +415,7 @@
 
     <div id="chartSection" class="content-card hidden">
         <div class="chart-grid" id="chartGrid"></div>
-        <div style="font-size: 0.8rem; color: #ff758f; margin-top: 10px;">Tap any character to listen! 🔊</div>
+        <div style="font-size: 0.8rem; color: #ff758f; margin-top: 10px;">Tap any character/word to listen! 🔊</div>
     </div>
 
     <script>
@@ -422,6 +447,109 @@
             { kana: 'りゃ', romaji: 'rya' }, { kana: 'りゅ', romaji: 'ryu' }, { kana: 'りょ', romaji: 'ryo' }
         ];
 
+        // ひらがな単語100個
+        const hWords = [
+            { kana: 'さくら', romaji: 'sakura', meaning: 'Cherry Blossom 🌸' },
+            { kana: 'ねこ', romaji: 'neko', meaning: 'Cat 🐱' },
+            { kana: 'いぬ', romaji: 'inu', meaning: 'Dog 🐶' },
+            { kana: 'すき', romaji: 'suki', meaning: 'Love / Like 💖' },
+            { kana: 'ありがとう', romaji: 'arigatou', meaning: 'Thank you 🙏' },
+            { kana: 'かわいい', romaji: 'kawaii', meaning: 'Cute 🥰' },
+            { kana: 'たこやき', romaji: 'takoyaki', meaning: 'Takoyaki 🐙' },
+            { kana: 'おはよ', romaji: 'ohayo', meaning: 'Good morning ☀️' },
+            { kana: 'おやすみ', romaji: 'oyasumi', meaning: 'Good night 🌙' },
+            { kana: 'みず', romaji: 'mizu', meaning: 'Water 💧' },
+            { kana: 'ほん', romaji: 'hon', meaning: 'Book 📚' },
+            { kana: 'そら', romaji: 'sora', meaning: 'Sky ☁️' },
+            { kana: 'はな', romaji: 'hana', meaning: 'Flower 🌺' },
+            { kana: 'ゆき', romaji: 'yuki', meaning: 'Snow ❄️' },
+            { kana: 'ともだち', romaji: 'tomodachi', meaning: 'Friend 🤝' },
+            { kana: 'たべもの', romaji: 'tabemono', meaning: 'Food 🍱' },
+            { kana: 'のみもの', romaji: 'nomimono', meaning: 'Drink 🥤' },
+            { kana: 'おちゃ', romaji: 'ocha', meaning: 'Green tea 🍵' },
+            { kana: 'ごはん', romaji: 'gohan', meaning: 'Meal / Rice 🍚' },
+            { kana: 'あめ', romaji: 'ame', meaning: 'Rain / Candy 🌧️' },
+            { kana: 'うみ', romaji: 'umi', meaning: 'Sea / Ocean 🌊' },
+            { kana: 'やま', romaji: 'yama', meaning: 'Mountain ⛰️' },
+            { kana: 'かわ', romaji: 'kawa', meaning: 'River 🏞️' },
+            { kana: 'つき', romaji: 'tsuki', meaning: 'Moon 🌙' },
+            { kana: 'たいよう', romaji: 'taiyou', meaning: 'Sun ☀️' },
+            { kana: 'ほし', romaji: 'hoshi', meaning: 'Star ⭐️' },
+            { kana: 'かぜ', romaji: 'kaze', meaning: 'Wind 🌬️' },
+            { kana: 'とり', romaji: 'tori', meaning: 'Bird 🐦' },
+            { kana: 'さかな', romaji: 'sakana', meaning: 'Fish 🐟' },
+            { kana: 'うま', romaji: 'uma', meaning: 'Horse 🐎' },
+            { kana: 'うさぎ', romaji: 'usagi', meaning: 'Rabbit 🐇' },
+            { kana: 'くま', romaji: 'kuma', meaning: 'Bear 🐻' },
+            { kana: 'きつね', romaji: 'kitsune', meaning: 'Fox 🦊' },
+            { kana: 'たぬき', romaji: 'tanuki', meaning: 'Raccoon dog 🦝' },
+            { kana: 'かめ', romaji: 'kame', meaning: 'Turtle 🐢' },
+            { kana: 'かえる', romaji: 'kaeru', meaning: 'Frog 🐸' },
+            { kana: 'むし', romaji: 'mushi', meaning: 'Insect 🐛' },
+            { kana: 'き', romaji: 'ki', meaning: 'Tree 🌳' },
+            { kana: 'くさ', romaji: 'kusa', meaning: 'Grass 🌿' },
+            { kana: 'もり', romaji: 'mori', meaning: 'Forest 🌲' },
+            { kana: 'いえ', romaji: 'ie', meaning: 'House 🏠' },
+            { kana: 'へや', romaji: 'heya', meaning: 'Room 🚪' },
+            { kana: 'まち', romaji: 'machi', meaning: 'Town / City 🏙️' },
+            { kana: 'みち', romaji: 'michi', meaning: 'Road / Path 🛣️' },
+            { kana: 'くるま', romaji: 'kuruma', meaning: 'Car 🚗' },
+            { kana: 'でんしゃ', romaji: 'densha', meaning: 'Train 🚃' },
+            { kana: 'ひこうき', romaji: 'hikouki', meaning: 'Airplane ✈️' },
+            { kana: 'ふね', romaji: 'fune', meaning: 'Ship 🚢' },
+            { kana: 'えき', romaji: 'eki', meaning: 'Station 🚉' },
+            { kana: 'くうこう', romaji: 'kuukou', meaning: 'Airport ✈️' },
+            { kana: 'がっこう', romaji: 'gakkou', meaning: 'School 🏫' },
+            { kana: 'せんせい', romaji: 'sensei', meaning: 'Teacher 🧑‍🏫' },
+            { kana: 'がくせい', romaji: 'gakusei', meaning: 'Student 🧑‍🎓' },
+            { kana: 'かぞく', romaji: 'kazoku', meaning: 'Family 👨‍👩‍👧' },
+            { kana: 'おとうさん', romaji: 'otousan', meaning: 'Father 👨' },
+            { kana: 'おかあさん', romaji: 'okaasan', meaning: 'Mother 👩' },
+            { kana: 'おにいさん', romaji: 'oniisan', meaning: 'Big brother 👦' },
+            { kana: 'おねえさん', romaji: 'oneesan', meaning: 'Big sister 👧' },
+            { kana: 'あかちゃん', romaji: 'akachan', meaning: 'Baby 👶' },
+            { kana: 'め', romaji: 'me', meaning: 'Eye 👁️' },
+            { kana: 'みみ', romaji: 'mimi', meaning: 'Ear 👂' },
+            { kana: 'くち', romaji: 'kuchi', meaning: 'Mouth 👄' },
+            { kana: 'て', romaji: 'te', meaning: 'Hand ✋' },
+            { kana: 'あし', romaji: 'ashi', meaning: 'Foot / Leg 🦶' },
+            { kana: 'かお', romaji: 'kao', meaning: 'Face 😊' },
+            { kana: 'あたま', romaji: 'atama', meaning: 'Head 🗣️' },
+            { kana: 'こころ', romaji: 'kokoro', meaning: 'Heart ❤️' },
+            { kana: 'あかい', romaji: 'akai', meaning: 'Red 🔴' },
+            { kana: 'あおい', romaji: 'aoi', meaning: 'Blue 🔵' },
+            { kana: 'しろい', romaji: 'shiroi', meaning: 'White ⚪️' },
+            { kana: 'くろい', romaji: 'kuroi', meaning: 'Black ⬛️' },
+            { kana: 'きいろい', romaji: 'kiiroi', meaning: 'Yellow 🟡' },
+            { kana: 'おおきい', romaji: 'ookii', meaning: 'Big 🐘' },
+            { kana: 'ちいさい', romaji: 'chiisai', meaning: 'Small 🐭' },
+            { kana: 'たかい', romaji: 'takai', meaning: 'High / Expensive 🏷️' },
+            { kana: 'やすい', romaji: 'yasui', meaning: 'Cheap 🪙' },
+            { kana: 'あかい', romaji: 'akai', meaning: 'Red 🍎' },
+            { kana: 'たのしい', romaji: 'tanoshii', meaning: 'Fun ✨' },
+            { kana: 'うれしい', romaji: 'ureshii', meaning: 'Happy 😊' },
+            { kana: 'かなしい', romaji: 'kanashii', meaning: 'Sad 😢' },
+            { kana: 'おいしい', romaji: 'oishii', meaning: 'Delicious 😋' },
+            { kana: 'あつい', romaji: 'atsui', meaning: 'Hot ☀️' },
+            { kana: 'さむい', romaji: 'samui', meaning: 'Cold ❄️' },
+            { kana: 'あさ', romaji: 'asa', meaning: 'Morning 🌅' },
+            { kana: 'ひる', romaji: 'hiru', meaning: 'Noon / Day ☀️' },
+            { kana: 'よる', romaji: 'yoru', meaning: 'Night 🌙' },
+            { kana: 'きょう', romaji: 'kyou', meaning: 'Today 📅' },
+            { kana: 'あした', romaji: 'ashita', meaning: 'Tomorrow ⏭️' },
+            { kana: 'きのう', romaji: 'kinou', meaning: 'Yesterday ⏮️' },
+            { kana: 'いま', romaji: 'ima', meaning: 'Now ⏰' },
+            { kana: 'じかん', romaji: 'jikan', meaning: 'Time ⏳' },
+            { kana: 'ゆめ', romaji: 'yume', meaning: 'Dream 💭' },
+            { kana: 'ひかり', romaji: 'hikari', meaning: 'Light 💡' },
+            { kana: 'かげ', romaji: 'kage', meaning: 'Shadow 👤' },
+            { kana: 'おと', romaji: 'oto', meaning: 'Sound 🎵' },
+            { kana: 'うた', romaji: 'uta', meaning: 'Song 🎤' },
+            { kana: 'えいが', romaji: 'eiga', meaning: 'Movie 🎬' },
+            { kana: 'おまつり', romaji: 'omatsuri', meaning: 'Festival 🏮' },
+            { kana: 'たび', romaji: 'tabi', meaning: 'Travel 🧳' }
+        ];
+
         const kEasy = [
             { kana: 'ア', romaji: 'a' }, { kana: 'イ', romaji: 'i' }, { kana: 'ウ', romaji: 'u' }, { kana: 'エ', romaji: 'e' }, { kana: 'オ', romaji: 'o' },
             { kana: 'カ', romaji: 'ka' }, { kana: 'キ', romaji: 'ki' }, { kana: 'ク', romaji: 'ku' }, { kana: 'ケ', romaji: 'ke' }, { kana: 'コ', romaji: 'ko' },
@@ -450,6 +578,110 @@
             { kana: 'リャ', romaji: 'rya' }, { kana: 'リュ', romaji: 'ryu' }, { kana: 'リョ', romaji: 'ryo' }
         ];
 
+        // カタカナ単語100個
+        const kWords = [
+            { kana: 'アイス', romaji: 'aisu', meaning: 'Ice cream 🍦' },
+            { kana: 'コーヒー', romaji: 'ko-hi-', meaning: 'Coffee ☕️' },
+            { kana: 'ケーキ', romaji: 'ke-ki', meaning: 'Cake 🍰' },
+            { kana: 'スマホ', romaji: 'sumaho', meaning: 'Smartphone 📱' },
+            { kana: 'タクシー', romaji: 'takushi-', meaning: 'Taxi 🚕' },
+            { kana: 'パン', romaji: 'pan', meaning: 'Bread 🍞' },
+            { kana: 'バス', romaji: 'basu', meaning: 'Bus 🚌' },
+            { kana: 'ホテル', romaji: 'hoteru', meaning: 'Hotel 🏨' },
+            { kana: 'カメラ', romaji: 'kamera', meaning: 'Camera 📷' },
+            { kana: 'ラーメン', romaji: 'ra-men', meaning: 'Ramen 🍜' },
+            { kana: 'チョコ', romaji: 'choko', meaning: 'Chocolate 🍫' },
+            { kana: 'ピアノ', romaji: 'piano', meaning: 'Piano 🎹' },
+            { kana: 'ジュース', romaji: 'ju-su', meaning: 'Juice 🍹' },
+            { kana: 'ビール', romaji: 'bi-ru', meaning: 'Beer 🍺' },
+            { kana: 'ワイン', romaji: 'wain', meaning: 'Wine 🍷' },
+            { kana: 'トマト', romaji: 'tomato', meaning: 'Tomato 🍅' },
+            { kana: 'バナナ', romaji: 'banana', meaning: 'Banana 🍌' },
+            { kana: 'リンゴ', romaji: 'ringo', meaning: 'Apple 🍎' },
+            { kana: 'オレンジ', romaji: 'orenji', meaning: 'Orange 🍊' },
+            { kana: 'イチゴ', romaji: 'ichigo', meaning: 'Strawberry 🍓' },
+            { kana: 'サラダ', romaji: 'sarada', meaning: 'Salad 🥗' },
+            { kana: 'スープ', romaji: 'su-pu', meaning: 'Soup 🥣' },
+            { kana: 'パスタ', romaji: 'pasuta', meaning: 'Pasta 🍝' },
+            { kana: 'ピザ', romaji: 'piza', meaning: 'Pizza 🍕' },
+            { kana: 'バーガー', romaji: 'ba-ga-', meaning: 'Burger 🍔' },
+            { kana: 'ポテト', romaji: 'poteto', meaning: 'French fries 🍟' },
+            { kana: 'カレー', romaji: 'kare-', meaning: 'Curry 🍛' },
+            { kana: 'スシ', romaji: 'sushi', meaning: 'Sushi 🍣' },
+            { kana: 'テレビ', romaji: 'terebi', meaning: 'TV 📺' },
+            { kana: 'ラジオ', romaji: 'rajio', meaning: 'Radio 📻' },
+            { kana: 'パソコン', romaji: 'pasokon', meaning: 'PC / Laptop 💻' },
+            { kana: 'アプリ', romaji: 'apuri', meaning: 'App 📱' },
+            { kana: 'ゲーム', romaji: 'ge-mu', meaning: 'Game 🎮' },
+            { kana: 'アニメ', romaji: 'anime', meaning: 'Anime 🎬' },
+            { kana: 'マンガ', romaji: 'manga', meaning: 'Manga 📚' },
+            { kana: 'ダンス', romaji: 'dansu', meaning: 'Dance 💃' },
+            { kana: 'スポーツ', romaji: 'supo-tsu', meaning: 'Sports ⚽️' },
+            { kana: 'サッカー', romaji: 'sakka-', meaning: 'Soccer ⚽️' },
+            { kana: 'テニス', romaji: 'tenisu', meaning: 'Tennis 🎾' },
+            { kana: 'ゴルフ', romaji: 'gorufu', meaning: 'Golf ⛳️' },
+            { kana: 'プール', romaji: 'pu-ru', meaning: 'Pool 🏊‍♀️' },
+            { kana: 'シャツ', romaji: 'shatsu', meaning: 'Shirt 👔' },
+            { kana: 'パンツ', romaji: 'pantsu', meaning: 'Pants 👖' },
+            { kana: 'ドレス', romaji: 'doresu', meaning: 'Dress 👗' },
+            { kana: 'クツ', romaji: 'kutsu', meaning: 'Shoes 👟' },
+            { kana: 'バッグ', romaji: 'baggu', meaning: 'Bag 👜' },
+            { kana: 'メガネ', romaji: 'megane', meaning: 'Glasses 👓' },
+            { kana: 'リング', romaji: 'ringu', meaning: 'Ring 💍' },
+            { kana: 'ピンク', romaji: 'pinku', meaning: 'Pink 🩷' },
+            { kana: 'ブルー', romaji: 'buru-', meaning: 'Blue 💙' },
+            { kana: 'レッド', romaji: 'reddo', meaning: 'Red 🔴' },
+            { kana: 'グリーン', romaji: 'guri-n', meaning: 'Green 💚' },
+            { kana: 'イエロー', romaji: 'iero-', meaning: 'Yellow 💛' },
+            { kana: 'ホワイト', romaji: 'howaito', meaning: 'White 🤍' },
+            { kana: 'ブラック', romaji: 'burakku', meaning: 'Black 🖤' },
+            { kana: 'ドア', romaji: 'doa', meaning: 'Door 🚪' },
+            { kana: 'ベッド', romaji: 'beddo', meaning: 'Bed 🛏️' },
+            { kana: 'ソファ', romaji: 'sofa', meaning: 'Sofa 🛋️' },
+            { kana: 'テーブル', romaji: 'te-buru', meaning: 'Table 🍽️' },
+            { kana: 'ライト', romaji: 'raito', meaning: 'Light 💡' },
+            { kana: 'キー', romaji: 'ki-', meaning: 'Key 🔑' },
+            { kana: 'コイン', romaji: 'koin', meaning: 'Coin 🪙' },
+            { kana: 'カード', romaji: 'ka-do', meaning: 'Card 💳' },
+            { kana: 'ノート', romaji: 'no-to', meaning: 'Notebook 📓' },
+            { kana: 'ペン', romaji: 'pen', meaning: 'Pen 🖊️' },
+            { kana: 'ボックス', romaji: 'bokkusu', meaning: 'Box 📦' },
+            { kana: 'ギフト', romaji: 'gifuto', meaning: 'Gift 🎁' },
+            { kana: 'パーティー', romaji: 'pa-ti-', meaning: 'Party 🥳' },
+            { kana: 'ライブ', romaji: 'raibu', meaning: 'Live show 🎤' },
+            { kana: 'チケット', romaji: 'chiketto', meaning: 'Ticket 🎫' },
+            { kana: 'ニュース', romaji: 'nyu-su', meaning: 'News 📰' },
+            { kana: 'サイン', romaji: 'sain', meaning: 'Sign / Autograph ✍️' },
+            { kana: 'ハート', romaji: 'ha-to', meaning: 'Heart ❤️' },
+            { kana: 'スター', romaji: 'suta-', meaning: 'Star ⭐️' },
+            { kana: 'サンシャイン', romaji: 'sanshain', meaning: 'Sunshine ☀️' },
+            { kana: 'レインボー', romaji: 'reinbo-', meaning: 'Rainbow 🌈' },
+            { kana: 'フラワー', romaji: 'furawa-', meaning: 'Flower 💐' },
+            { kana: 'ペット', romaji: 'petto', meaning: 'Pet 🐶' },
+            { kana: 'キャット', romaji: 'kyatto', meaning: 'Cat 🐱' },
+            { kana: 'ドッグ', romaji: 'doggu', meaning: 'Dog 🐶' },
+            { kana: 'ライオン', romaji: 'raion', meaning: 'Lion 🦁' },
+            { kana: 'パンダ', romaji: 'panda', meaning: 'Panda 🐼' },
+            { kana: 'ペンギン', romaji: 'pengin', meaning: 'Penguin 🐧' },
+            { kana: 'ミルク', romaji: 'miruku', meaning: 'Milk 🥛' },
+            { kana: 'バター', romaji: 'bata-', meaning: 'Butter 🧈' },
+            { kana: 'チーズ', romaji: 'chi-zu', meaning: 'Cheese 🧀' },
+            { kana: 'ジャム', romaji: 'jamu', meaning: 'Jam 🫐' },
+            { kana: 'シュガー', romaji: 'shuga-', meaning: 'Sugar 🧂' },
+            { kana: 'ソルト', romaji: 'soruto', meaning: 'Salt 🧂' },
+            { kana: 'オイル', romaji: 'oiru', meaning: 'Oil 🫒' },
+            { kana: 'ハッピー', romaji: 'happi-', meaning: 'Happy 😊' },
+            { kana: 'ラッキー', romaji: 'rakki-', meaning: 'Lucky 🍀' },
+            { kana: 'スマイル', romaji: 'sumairu', meaning: 'Smile 😄' },
+            { kana: 'ラブ', romaji: 'rabu', meaning: 'Love 💖' },
+            { kana: 'キス', romaji: 'kisu', meaning: 'Kiss 💋' },
+            { kana: 'ハグ', romaji: 'hagu', meaning: 'Hug 🫂' },
+            { kana: 'フレンド', romaji: 'furendo', meaning: 'Friend 🤝' },
+            { kana: 'ファミリー', romaji: 'famiri-', meaning: 'Family 👨‍👩‍👧' },
+            { kana: 'メモリー', romaji: 'memori-', meaning: 'Memory 📸' },
+            { kana: 'フューチャー', romaji: 'fyu-cha-', meaning: 'Future 🚀' }
+        ];
+
         const perfectMessages = [
             "10/10 PERFECT!! You are officially a Kana Master, Clara! 🌸✨ So proud of you! 🖤 - Ryuji",
             "100%!! Absolutely flawless! My girl is unstoppable! 🥰🎉 - Ryuji",
@@ -476,12 +708,15 @@
         }
 
         let isKatakana = false;
-        let isHard = false;
+        let mode = 'easy';
 
         function getActiveData() {
+            if (mode === 'words') {
+                return isKatakana ? kWords : hWords;
+            }
             let easyData = isKatakana ? kEasy : hEasy;
             let hardData = isKatakana ? kHard : hHard;
-            return isHard ? [...easyData, ...hardData] : easyData;
+            return mode === 'hard' ? [...easyData, ...hardData] : easyData;
         }
 
         let flashcardData = shuffle(getActiveData());
@@ -495,6 +730,7 @@
         const katakanaBtn = document.getElementById('katakanaBtn');
         const easyModeBtn = document.getElementById('easyModeBtn');
         const hardModeBtn = document.getElementById('hardModeBtn');
+        const wordsModeBtn = document.getElementById('wordsModeBtn');
 
         hiraganaBtn.addEventListener('click', () => {
             isKatakana = false;
@@ -511,18 +747,28 @@
         });
 
         easyModeBtn.addEventListener('click', () => {
-            isHard = false;
-            easyModeBtn.classList.add('active');
-            hardModeBtn.classList.remove('active');
+            mode = 'easy';
+            updateModeButtons();
             resetAll();
         });
 
         hardModeBtn.addEventListener('click', () => {
-            isHard = true;
-            hardModeBtn.classList.add('active');
-            easyModeBtn.classList.remove('active');
+            mode = 'hard';
+            updateModeButtons();
             resetAll();
         });
+
+        wordsModeBtn.addEventListener('click', () => {
+            mode = 'words';
+            updateModeButtons();
+            resetAll();
+        });
+
+        function updateModeButtons() {
+            easyModeBtn.classList.toggle('active', mode === 'easy');
+            hardModeBtn.classList.toggle('active', mode === 'hard');
+            wordsModeBtn.classList.toggle('active', mode === 'words');
+        }
 
         function resetAll() {
             flashcardData = shuffle(getActiveData());
@@ -583,6 +829,7 @@
         const cardWrapper = document.getElementById('cardWrapper');
         const cardChar = document.getElementById('cardChar');
         const cardRomaji = document.getElementById('cardRomaji');
+        const cardMeaning = document.getElementById('cardMeaning');
         const cardCounter = document.getElementById('cardCounter');
 
         function updateCard() {
@@ -591,6 +838,7 @@
                 const item = flashcardData[currentCardIndex];
                 cardChar.innerText = item.kana;
                 cardRomaji.innerText = item.romaji;
+                cardMeaning.innerText = item.meaning || '';
                 cardCounter.innerText = `${currentCardIndex + 1} / ${flashcardData.length}`;
             }, 150);
         }
@@ -627,7 +875,7 @@
 
         function startQuiz() {
             const currentSet = getActiveData();
-            quizData = shuffle(currentSet).slice(0, 10);
+            quizData = shuffle(currentSet).slice(0, Math.min(10, currentSet.length));
             currentQuizIndex = 0;
             score = 0;
             isAnswering = false;
@@ -637,8 +885,8 @@
         function loadQuizQuestion() {
             if (currentQuizIndex >= quizData.length) {
                 let msgList = goodMessages;
-                if (score === 10) msgList = perfectMessages;
-                else if (score >= 7) msgList = highMessages;
+                if (score === quizData.length) msgList = perfectMessages;
+                else if (score >= Math.floor(quizData.length * 0.7)) msgList = highMessages;
                 
                 const finalMsg = msgList[Math.floor(Math.random() * msgList.length)];
 
@@ -655,7 +903,7 @@
             scoreBoard.innerText = `Score: ${score} / ${quizData.length}`;
 
             let options = [currentItem.romaji];
-            while (options.length < 4) {
+            while (options.length < 4 && options.length < currentSet.length) {
                 const randomItem = currentSet[Math.floor(Math.random() * currentSet.length)];
                 if (!options.includes(randomItem.romaji)) {
                     options.push(randomItem.romaji);
@@ -703,12 +951,19 @@
         function renderChart() {
             const currentSet = getActiveData();
             chartGrid.innerHTML = '';
+            
+            if (mode === 'words') {
+                chartGrid.style.gridTemplateColumns = 'repeat(2, 1fr)';
+            } else {
+                chartGrid.style.gridTemplateColumns = 'repeat(4, 1fr)';
+            }
+
             currentSet.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'chart-item';
                 div.innerHTML = `
                     <div class="chart-main">${item.kana}</div>
-                    <div class="chart-sub">${item.romaji}</div>
+                    <div class="chart-sub">${item.romaji} ${item.meaning ? `<br>(${item.meaning})` : ''}</div>
                 `;
                 div.addEventListener('click', () => speakKana(item.kana));
                 chartGrid.appendChild(div);
