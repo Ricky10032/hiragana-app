@@ -27,8 +27,47 @@
             align-items: center;
             user-select: none;
             overflow-x: hidden;
+            position: relative;
         }
 
+        /* 🌸 サイドエリアの賑やかマスコット（左右の空白活用） */
+        .side-mascot {
+            position: fixed;
+            bottom: 20px;
+            width: 80px;
+            height: 80px;
+            z-index: 10;
+            pointer-events: auto;
+            cursor: pointer;
+            filter: drop-shadow(0 4px 10px rgba(168, 85, 247, 0.25));
+            transition: transform 0.2s ease;
+        }
+
+        .side-mascot-left {
+            left: 15px;
+            animation: floatLeft 3.5s ease-in-out infinite;
+        }
+
+        .side-mascot-right {
+            right: 15px;
+            animation: bounceRight 2.5s ease-in-out infinite;
+        }
+
+        .side-mascot:active {
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        @keyframes floatLeft {
+            0%, 100% { transform: translateY(0px) rotate(-3deg); }
+            50% { transform: translateY(-10px) rotate(3deg); }
+        }
+
+        @keyframes bounceRight {
+            0%, 100% { transform: translateY(0px) scale(1, 1); }
+            50% { transform: translateY(-12px) scale(1.05, 0.95); }
+        }
+
+        /* 🌸 ヘッダーエリア */
         .header-container {
             display: flex;
             align-items: center;
@@ -38,6 +77,7 @@
             position: relative;
         }
 
+        /* 五条先生浮遊 */
         .gojo-avatar {
             width: 65px;
             height: 65px;
@@ -63,6 +103,34 @@
         @keyframes domainExpansion {
             0% { filter: drop-shadow(0 0 12px #c084fc) drop-shadow(0 0 25px #f472b6); transform: scale(1.05); }
             100% { filter: drop-shadow(0 0 20px #e879f9) drop-shadow(0 0 35px #818cf8); transform: scale(1.15); }
+        }
+
+        /* リムル様プルプル */
+        .rimuru-avatar {
+            width: 60px;
+            height: 55px;
+            animation: rimuruBounce 2s ease-in-out infinite;
+            filter: drop-shadow(0 5px 10px rgba(56, 189, 248, 0.35));
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+
+        .rimuru-avatar:active {
+            transform: scale(0.85, 1.25);
+        }
+
+        @keyframes rimuruBounce {
+            0%, 100% { transform: translateY(0px) scale(1, 1); }
+            50% { transform: translateY(-6px) scale(1.08, 0.92); }
+        }
+
+        .rimuru-avatar.jump-active {
+            animation: rimuruSuperJump 0.6s ease-in-out infinite alternate;
+        }
+
+        @keyframes rimuruSuperJump {
+            0% { transform: translateY(0px) scale(1, 1); }
+            100% { transform: translateY(-18px) scale(1.15, 0.85); filter: drop-shadow(0 0 15px #38bdf8); }
         }
 
         h1 {
@@ -404,11 +472,47 @@
         .hidden {
             display: none !important;
         }
+
+        @media (max-width: 600px) {
+            .side-mascot {
+                width: 55px;
+                height: 55px;
+                bottom: 10px;
+            }
+            .side-mascot-left { left: 5px; }
+            .side-mascot-right { right: 5px; }
+        }
     </style>
 </head>
 <body>
 
+    <!-- 🌸 左サイドマスコット（リムル様ミニ） -->
+    <svg class="side-mascot side-mascot-left" viewBox="0 0 100 80">
+        <path d="M 10 50 Q 5 15 50 15 Q 95 15 90 50 Q 95 75 50 75 Q 5 75 10 50 Z" fill="#38bdf8" opacity="0.9"/>
+        <ellipse cx="35" cy="45" rx="4" ry="7" fill="#0369a1"/>
+        <ellipse cx="65" cy="45" rx="4" ry="7" fill="#0369a1"/>
+        <circle cx="36" cy="43" r="1.5" fill="#ffffff"/>
+        <circle cx="66" cy="43" r="1.5" fill="#ffffff"/>
+        <path d="M 45 55 Q 50 58 55 55" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="22" cy="50" r="4" fill="#7dd3fc" opacity="0.6"/>
+        <circle cx="78" cy="50" r="4" fill="#7dd3fc" opacity="0.6"/>
+    </svg>
+
+    <!-- 🌸 右サイドマスコット（ちび五条ミニ） -->
+    <svg class="side-mascot side-mascot-right" viewBox="0 0 100 100">
+        <path d="M 20 45 Q 15 15 50 10 Q 85 15 80 45 Z" fill="#ffffff" stroke="#e9d5ff" stroke-width="2"/>
+        <path d="M 25 30 L 15 10 L 35 22 L 50 5 L 65 22 L 85 10 L 75 30" fill="#ffffff" stroke="#e9d5ff" stroke-width="2"/>
+        <ellipse cx="50" cy="52" rx="28" ry="24" fill="#fff1f2"/>
+        <rect x="24" y="42" width="52" height="18" rx="9" fill="#3b0764"/>
+        <rect x="28" y="45" width="44" height="12" rx="6" fill="#581c87"/>
+        <circle cx="36" cy="48" r="3" fill="#f472b6"/>
+        <circle cx="64" cy="48" r="3" fill="#c084fc"/>
+        <path d="M 44 65 Q 50 70 56 65" fill="none" stroke="#ec4899" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+
+    <!-- 🌸 メインヘッダー -->
     <div class="header-container">
+        <!-- ちび五条先生 -->
         <svg class="gojo-avatar" id="gojoAvatar" viewBox="0 0 100 100">
             <path d="M 20 45 Q 15 15 50 10 Q 85 15 80 45 Z" fill="#ffffff" stroke="#e9d5ff" stroke-width="2"/>
             <path d="M 25 30 L 15 10 L 35 22 L 50 5 L 65 22 L 85 10 L 75 30" fill="#ffffff" stroke="#e9d5ff" stroke-width="2"/>
@@ -421,10 +525,23 @@
             <circle cx="32" cy="60" r="4" fill="#fbcfe8"/>
             <circle cx="68" cy="60" r="4" fill="#fbcfe8"/>
         </svg>
+
         <div>
             <h1>Kana for Clara 🌸</h1>
-            <div class="subtitle">Sensei Gojo & Ryuji's Class 🖤</div>
+            <div class="subtitle">Gojo & Rimuru & Ryuji's Class 💙</div>
         </div>
+
+        <!-- 転スラ リムル様（スライム形態） -->
+        <svg class="rimuru-avatar" id="rimuruAvatar" viewBox="0 0 100 80">
+            <path d="M 10 50 Q 5 15 50 15 Q 95 15 90 50 Q 95 75 50 75 Q 5 75 10 50 Z" fill="#38bdf8" opacity="0.95"/>
+            <ellipse cx="35" cy="45" rx="5" ry="8" fill="#0369a1"/>
+            <ellipse cx="65" cy="45" rx="5" ry="8" fill="#0369a1"/>
+            <circle cx="37" cy="42" r="2" fill="#ffffff"/>
+            <circle cx="67" cy="42" r="2" fill="#ffffff"/>
+            <path d="M 44 56 Q 50 60 56 56" fill="none" stroke="#0284c7" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="22" cy="52" r="5" fill="#7dd3fc" opacity="0.6"/>
+            <circle cx="78" cy="52" r="5" fill="#7dd3fc" opacity="0.6"/>
+        </svg>
     </div>
 
     <div class="controls-container">
@@ -631,7 +748,7 @@
             { kana: 'バ', romaji: 'ba' }, { kana: 'ビ', romaji: 'bi' }, { kana: 'ブ', romaji: 'bu' }, { kana: 'ベ', romaji: 'be' }, { kana: 'ボ', romaji: 'bo' },
             { kana: 'パ', romaji: 'pa' }, { kana: 'ピ', romaji: 'pi' }, { kana: 'プ', romaji: 'pu' }, { kana: 'ペ', romaji: 'pe' }, { kana: 'ポ', romaji: 'po' },
             { kana: 'キャ', romaji: 'kya' }, { kana: 'キュ', romaji: 'kyu' }, { kana: 'キョ', romaji: 'kyo' },
-            { kana: 'キャ', romaji: 'sha' }, { kana: 'シュ', romaji: 'shu' }, { kana: 'ショ', romaji: 'sho' },
+            { kana: 'シャ', romaji: 'sha' }, { kana: 'しゅ', romaji: 'shu' }, { kana: 'しょ', romaji: 'sho' },
             { kana: 'チャ', romaji: 'cha' }, { kana: 'チュ', romaji: 'chu' }, { kana: 'チョ', romaji: 'cho' },
             { kana: 'ニャ', romaji: 'nya' }, { kana: 'ニュ', romaji: 'nyu' }, { kana: 'ニョ', romaji: 'nyo' },
             { kana: 'ヒャ', romaji: 'hya' }, { kana: 'ヒュ', romaji: 'hyu' }, { kana: 'ヒョ', romaji: 'hyo' },
@@ -743,18 +860,18 @@
         ];
 
         const perfectMessages = [
-            "10/10 Domain Expansion!! 🌸✨ You are a Kana Master, Clara! So proud of you! 🖤 - Sensei Gojo & Ryuji",
-            "100% PERFECT!! Unstoppable force, Clara! 🥰🎉 - Sensei Gojo & Ryuji",
-            "FULL MARKS!! Infinite knowledge unlocked! Amazing job Clara! 💖 - Sensei Gojo & Ryuji"
+            "10/10 PERFECT!! Rimuru & Sensei Gojo are so proud of you, Clara! 💙🌸 - Ryuji",
+            "100% FULL MARKS!! Unstoppable Kana Master Clara! 🥰🎉 - Rimuru & Gojo",
+            "PERFECT SCORE!! Great job Clara! 💖 - Sensei Gojo & Rimuru"
         ];
 
         const highMessages = [
-            "So close to perfection! Great job Clara! 💖 - Sensei Gojo",
+            "So close to perfection! Great job Clara! 💖 - Gojo & Rimuru",
             "Awesome score!! You're mastering this so fast! 🖤 - Ryuji"
         ];
 
         const goodMessages = [
-            "Good effort Clara! Practice makes perfect! 💪✨ - Sensei Gojo",
+            "Good effort Clara! Practice makes perfect! 💪✨ - Gojo & Rimuru",
             "Nice try!! Keep practicing, you got this! 🖤 - Ryuji"
         ];
 
@@ -792,11 +909,18 @@
         const hardModeBtn = document.getElementById('hardModeBtn');
         const wordsModeBtn = document.getElementById('wordsModeBtn');
         const gojoAvatar = document.getElementById('gojoAvatar');
+        const rimuruAvatar = document.getElementById('rimuruAvatar');
 
+        // 五条先生タップアクション（ボイスなし・輝き演出のみ）
         gojoAvatar.addEventListener('click', () => {
-            speakKana("大丈夫、僕最強だから");
             gojoAvatar.classList.add('domain-active');
             setTimeout(() => gojoAvatar.classList.remove('domain-active'), 2000);
+        });
+
+        // リムル様タップアクション（跳ねるアクション）
+        rimuruAvatar.addEventListener('click', () => {
+            rimuruAvatar.classList.add('jump-active');
+            setTimeout(() => rimuruAvatar.classList.remove('jump-active'), 1500);
         });
 
         hiraganaBtn.addEventListener('click', () => {
@@ -981,8 +1105,11 @@
                 if (score === quizData.length) {
                     msgList = perfectMessages;
                     gojoAvatar.classList.add('domain-active');
-                    speakKana("りょういきてんかい"); // 領域展開ボイスを再生！
-                    setTimeout(() => gojoAvatar.classList.remove('domain-active'), 4000);
+                    rimuruAvatar.classList.add('jump-active');
+                    setTimeout(() => {
+                        gojoAvatar.classList.remove('domain-active');
+                        rimuruAvatar.classList.remove('jump-active');
+                    }, 4000);
                 } else if (score >= Math.floor(quizData.length * 0.7)) {
                     msgList = highMessages;
                 }
